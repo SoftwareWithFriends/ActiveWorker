@@ -1,0 +1,13 @@
+settings: &settings
+  autocreate_indexes: true
+  identity_map_enabled: true
+
+defaults: &defaults
+  <<: *settings
+  host: localhost
+  port: 27017
+
+test:
+  <<: *defaults
+  database: testify_test
+  logger: false
