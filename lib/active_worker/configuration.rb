@@ -47,6 +47,5 @@ module ActiveWorker
       FinishedEvent.where(configuration_id: id).count > 0
     end
 
-
   end
 end

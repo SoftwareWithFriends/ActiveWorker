@@ -1,6 +1,6 @@
 = active_worker
 
-Description goes here.
+Frame work for running jobs.
 
 == Contributing to active_worker
  
