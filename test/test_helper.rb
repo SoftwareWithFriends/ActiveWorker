@@ -18,6 +18,7 @@ require 'mongoid'
 ENV["MONGOID_ENV"]="test"
 Mongoid.load!("#{File.dirname(__FILE__)}/mongoid.yml")
 
+require 'stalker'
 
 class ActiveSupport::TestCase
   def create_exception
