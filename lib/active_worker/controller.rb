@@ -1,6 +1,6 @@
 module ActiveWorker
   class Controller
-    extend JobQueue::RunRemotely
+    extend ActiveWorker::JobQueue::RunRemotely
 
     attr_reader :configuration
 
