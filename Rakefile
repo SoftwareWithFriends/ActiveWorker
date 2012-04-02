@@ -17,8 +17,8 @@ Jeweler::Tasks.new do |gem|
   gem.name = "active_worker"
   gem.homepage = "http://github.com/ryanmcgarvey/active_worker"
   gem.license = "MIT"
-  gem.summary = %Q{TODO: one-line summary of your gem}
-  gem.description = %Q{TODO: longer description of your gem}
+  gem.summary = %Q{Framework for making class distributable on a queueing system.}
+  gem.description = %Q{Uses a Configuration/Controller pattern to allow easy implementation and organziation of multi-tier distributed workloads.}
   gem.email = "perf@skarven.net"
   gem.authors = ["perf"]
   # dependencies defined in Gemfile

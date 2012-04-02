@@ -5,12 +5,12 @@
 
 Gem::Specification.new do |s|
   s.name = "active_worker"
-  s.version = "0.0.1"
+  s.version = "0.1.0"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["perf"]
-  s.date = "2012-03-30"
-  s.description = "TODO: longer description of your gem"
+  s.date = "2012-04-02"
+  s.description = "Uses a Configuration/Controller pattern to allow easy implementation and organziation of multi-tier distributed workloads."
   s.email = "perf@skarven.net"
   s.extra_rdoc_files = [
     "LICENSE.txt",
@@ -25,6 +25,7 @@ Gem::Specification.new do |s|
     "README.rdoc",
     "Rakefile",
     "VERSION",
+    "active_worker.gemspec",
     "lib/active_worker.rb",
     "lib/active_worker/behavior/acts_as_root_object.rb",
     "lib/active_worker/behavior/has_root_object.rb",
@@ -42,13 +43,15 @@ Gem::Specification.new do |s|
     "test/test_configuration.rb",
     "test/test_event.rb",
     "test/test_failure_event.rb",
-    "test/test_helper.rb"
+    "test/test_helper.rb",
+    "test/test_job_executer.rb",
+    "test/test_run_remotely.rb"
   ]
   s.homepage = "http://github.com/ryanmcgarvey/active_worker"
   s.licenses = ["MIT"]
   s.require_paths = ["lib"]
   s.rubygems_version = "1.8.10"
-  s.summary = "TODO: one-line summary of your gem"
+  s.summary = "Framework for making class distributable on a queueing system."
 
   if s.respond_to? :specification_version then
     s.specification_version = 3
