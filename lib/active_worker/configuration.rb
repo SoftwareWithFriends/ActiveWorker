@@ -48,7 +48,20 @@ module ActiveWorker
     end
 
     def finished
+      log "before"
+      log_events
       FinishedEvent.create(configuration: self)
+      log "after"
+      log_events
+    end
+
+    def log_events
+      log "for #{id}"
+      FinishedEvent.where(configuration_id: id).each { |e| log "   #{e.message}" }
+    end
+
+    def log(message)
+      #Rails.logger.info "EVENTS #{message}"
     end
 
   end
