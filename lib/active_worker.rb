@@ -1,5 +1,11 @@
 require 'mongoid'
-Dir.glob("#{File.dirname(__FILE__)}/active_worker/**/*.rb").each do |file|
-  puts "AW LIB FILE:#{file}"
-  puts require file
+
+#Load sub directories first
+Dir.glob("#{File.dirname(__FILE__)}/active_worker/*/**/*.rb").each do |file|
+  require file
 end
+
+Dir.glob("#{File.dirname(__FILE__)}/active_worker/**/*.rb").each do |file|
+  require file
+end
+
