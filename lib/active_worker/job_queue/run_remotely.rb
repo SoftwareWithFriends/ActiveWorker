@@ -26,20 +26,8 @@ module ActiveWorker
         end
       end
 
-      def launch_thread(configuration_id, *args)
-        worker = new(ActiveWorker::Configuration.find(configuration_id), *args)
-        worker.execute
-        worker.finished
-      end
-
       def run_remotely(host = nil)
         RemoteRunner.new(host,self.to_s)
-      end
-
-      def handle_error(error, method, params)
-        configuration_id = params.shift
-        configuration = ActiveWorker::Configuration.find(configuration_id)
-        "#{self.parent}::FailureEvent".constantize.from_error(configuration, error)
       end
     end
   end

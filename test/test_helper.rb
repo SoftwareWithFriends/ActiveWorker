@@ -31,5 +31,12 @@ class ActiveSupport::TestCase
     error
   end
 
+  setup :clear_database
+
+  private
+
+  def clear_database
+    Mongoid.database.collections.select { |c| c.name != 'system.indexes' }.each(&:drop)
+  end
 
 end

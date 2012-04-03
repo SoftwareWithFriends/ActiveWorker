@@ -1,15 +1,24 @@
 module ActiveWorker
   class Controller
-    extend ActiveWorker::JobQueue::RunRemotely
+    extend JobQueue::RunRemotely
 
     attr_reader :configuration
 
-    def initialize(configuration)
-      @configuration = configuration
+    def self.launch_thread(configuration_id, *args)
+      config = Configuration.find(configuration_id)
+      worker = new(config, *args)
+      worker.execute
+      worker.finished
     end
 
-    def finished?(finished_class, count = feed_count)
-      finished_class.for_top_level_configuration(configuration).count >= count
+    def self.handle_error(error, method, params)
+      configuration_id = params.shift
+      configuration = Configuration.find(configuration_id)
+      FailureEvent.from_error(configuration, error)
+    end
+
+    def initialize(configuration)
+      @configuration = configuration
     end
 
     def execute
@@ -17,7 +26,14 @@ module ActiveWorker
     end
 
     def finished
-      FinishedEvent.create configuration: configuration
+     configuration.finished
     end
+
+    private
+
+    def finished?(configurations)
+      FinishedEvent.exists_for_configurations?(configurations)
+    end
+
   end
 end

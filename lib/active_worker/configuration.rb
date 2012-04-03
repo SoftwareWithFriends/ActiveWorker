@@ -47,5 +47,9 @@ module ActiveWorker
       FinishedEvent.where(configuration_id: id).count > 0
     end
 
+    def finished
+      FinishedEvent.create(configuration: self)
+    end
+
   end
 end

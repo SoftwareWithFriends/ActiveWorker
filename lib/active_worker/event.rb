@@ -18,6 +18,11 @@ module ActiveWorker
 
     scope :for_root_object_id, lambda {|root_object_id| where(:root_object_id => root_object_id).descending(:created_at)}
 
+
+    def self.exists_for_configurations?(configurations)
+      where(:configuration_id.in => configurations.map(&:id)).count == configurations.size
+    end
+
     def fields_for_view
       view_fields = {}
       fields.keys.each do |field|
