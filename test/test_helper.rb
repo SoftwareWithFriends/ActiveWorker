@@ -20,6 +20,30 @@ Mongoid.load!("#{File.dirname(__FILE__)}/mongoid.yml")
 
 require 'stalker'
 
+
+module ActiveWorker
+
+  class Rootable
+    include Mongoid::Document
+    include ActiveWorker::Behavior::ActsAsRootObject
+  end
+
+
+  class TopConfig < Configuration
+    field :top_field
+
+    def child_configs
+      ChildConfig.mine(self).all
+    end
+  end
+
+  class ChildConfig < Configuration
+    field :child_field
+  end
+
+end
+
+
 class ActiveSupport::TestCase
   def create_exception
     error_message = "Error message"

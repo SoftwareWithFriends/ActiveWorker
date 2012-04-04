@@ -9,5 +9,5 @@ defaults: &defaults
 
 test:
   <<: *defaults
-  database: testify_test
+  database: active_worker_test
   logger: false

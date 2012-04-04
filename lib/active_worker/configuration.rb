@@ -48,20 +48,26 @@ module ActiveWorker
     end
 
     def finished
-      log "before"
-      log_events
       FinishedEvent.create(configuration: self)
-      log "after"
-      log_events
     end
 
-    def log_events
-      log "for #{id}"
-      FinishedEvent.where(configuration_id: id).each { |e| log "   #{e.message}" }
+    def self.get_as_hash_by_root_object(root_object)
+      configs = []
+      col = Mongoid.database.collection(self.collection_name)
+      col.find("root_object_id" => root_object.id, "parent_configuration_id" => nil).each do |config|
+        config["configurations"] = get_children_for(col, config["_id"])
+        configs << config
+      end
+      configs
     end
 
-    def log(message)
-      #Rails.logger.info "EVENTS #{message}"
+    def self.get_children_for(col, parent_configuration_id)
+      documents = []
+      col.find("parent_configuration_id" => parent_configuration_id).each do |doc|
+        doc["configurations"] = get_children_for(col, doc["_id"])
+        documents << doc
+      end
+      documents
     end
 
   end
