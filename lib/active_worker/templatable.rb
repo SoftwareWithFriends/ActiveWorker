@@ -1,6 +1,11 @@
 module ActiveWorker
   module Templatable
 
+
+    def self.included(base)
+      base.field :renderable?, :type => Boolean, :default => true
+    end
+
     def find_template
       child_template_ids = configurations.map(&:find_template).map(&:id)
 
@@ -13,16 +18,14 @@ module ActiveWorker
         attributes_for_template[field] = self.send(field)
       end
 
-      template_class.find_or_create_by(attributes_for_template)
+      template = template_class.find_or_create_by(attributes_for_template)
+      template
     end
 
     def template_class
       "#{self.class.parent}::Template".constantize
     end
 
-    def renderable?
-      true
-    end
 
   end
 end

@@ -35,5 +35,35 @@ module ActiveWorker
       assert root.completed?
     end
 
+    test "renderable configuration hases returns array of configuration hashess" do
+      root = Rootable.create
+      topconfig1 = root.configurations.create({},TemplatableTopConfig)
+      topconfig2 = root.configurations.create({},TemplatableTopConfig)
+      child_config1 = topconfig2.configurations.create({},TemplatableChildConfig)
+
+      assert_equal 2, root.renderable_configuration_hashes.size
+      assert_equal 1, root.renderable_configuration_hashes[1]["configurations"].size
+
+    end
+
+    test "renderable configurations hashes only returns with renderable configurations" do
+
+      root = Rootable.create
+
+      topconfig1 = root.configurations.create({},TemplatableTopConfig)
+      topconfig2 = root.configurations.create({},TopConfig)
+      templatable_child_config1 = topconfig1.configurations.create({},TemplatableChildConfig)
+      child_config1 = topconfig1.configurations.create({},ChildConfig)
+
+      templatable_child_config2 = topconfig2.configurations.create({},TemplatableChildConfig)
+      child_config2 = topconfig2.configurations.create({},ChildConfig)
+
+      renderable_hashes = root.renderable_configuration_hashes
+
+      assert_equal 1, renderable_hashes.size
+      assert_equal 1, renderable_hashes[0]["configurations"].size
+
+    end
+
   end
 end

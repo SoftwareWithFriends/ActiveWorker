@@ -18,7 +18,6 @@ module ActiveWorker
     test "Child Config is of the correct type" do
       parent_config = TopConfig.create(top_field: "top field")
       child_config0 = ChildConfig.create(child_field: "child field", parent_configuration: parent_config)
-      top_config = top_configs.first
 
       assert_equal TopConfig, parent_config.class
 

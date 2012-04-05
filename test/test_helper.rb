@@ -10,6 +10,14 @@ end
 require 'active_support/test_case'
 require 'test/unit'
 
+require 'minitest/reporters'
+MiniTest::Unit.runner = MiniTest::SuiteRunner.new
+if ENV["RM_INFO"] || ENV["TEAMCITY_VERSION"]
+  MiniTest::Unit.runner.reporters << MiniTest::Reporters::RubyMineReporter.new
+else
+  MiniTest::Unit.runner.reporters << MiniTest::Reporters::ProgressReporter.new
+end
+
 $LOAD_PATH.unshift(File.dirname(__FILE__))
 $LOAD_PATH.unshift(File.join(File.dirname(__FILE__), '..', 'lib'))
 require 'active_worker'
@@ -39,7 +47,19 @@ module ActiveWorker
 
   class ChildConfig < Configuration
     field :child_field
+
   end
+
+  class TemplatableTopConfig < Configuration
+    include Templatable
+    field :templatable_top_field
+
+end
+
+  class TemplatableChildConfig < Configuration
+    include Templatable
+     field :templatable_child_field
+   end
 
 end
 

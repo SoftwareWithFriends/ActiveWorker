@@ -36,6 +36,10 @@ module ActiveWorker
       def immediate_child_configurations
         configurations.where(parent_configuration_id: nil)
       end
+
+      def renderable_configuration_hashes
+        @renderable_configurations_hash ||= ActiveWorker::Configuration.get_renderable_hash_by_root_object(self)
+      end
     end
   end
 end
