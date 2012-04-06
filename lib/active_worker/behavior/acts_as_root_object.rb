@@ -7,7 +7,7 @@ module ActiveWorker
           has_many   relation, :dependent => :destroy,
                      :class_name => class_name,
                      :inverse_of => :root_object,
-                     autosave: true
+                     :autosave   => true
         end
       end
 
@@ -30,7 +30,7 @@ module ActiveWorker
       end
 
       def renderable_configurations
-        immediate_child_configurations.select {|c| c.renderable?}
+        immediate_child_configurations.select {|c| c.renderable}
       end
 
       def immediate_child_configurations

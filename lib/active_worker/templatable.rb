@@ -3,7 +3,7 @@ module ActiveWorker
 
 
     def self.included(base)
-      base.field :renderable?, :type => Boolean, :default => true
+      base.field :renderable, :type => Boolean, :default => true
     end
 
     def find_template
@@ -23,9 +23,11 @@ module ActiveWorker
     end
 
     def template_class
-      "#{self.class.parent}::Template".constantize
+      templated_class_name = "#{self.class.parent}::Template"
+      templated_class = templated_class_name.constantize
+      templated_class
     end
-
-
   end
+
+
 end
