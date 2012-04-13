@@ -33,6 +33,13 @@ module ActiveWorker
       "#{self.parent}::Controller".constantize
     end
 
+    def self.display_name
+      name.split("::").join(" ")
+    end
+
+    def self.css_name
+      name.split("::").join("_")
+    end
 
     def renderable_configurations
       configurations.select {|c| c.renderable}

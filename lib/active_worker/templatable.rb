@@ -1,9 +1,20 @@
 module ActiveWorker
   module Templatable
 
+    module ClassMethods
+      def template_class
+        templated_class_name = "#{parent}::Template"
+        templated_class = templated_class_name.constantize
+        templated_class
+      end
+    end
+
 
     def self.included(base)
       base.field :renderable, :type => Boolean, :default => true
+      base.field :template_name
+
+      base.extend(ClassMethods)
     end
 
     def find_template
@@ -19,14 +30,17 @@ module ActiveWorker
       end
 
       template = template_class.find_or_create_by(attributes_for_template)
+      Rails.logger.info "TEMPLATE NAME: #{template_name}"
+      template.name = template_name if template_name && (not template_name.empty?)
+      template.save!
       template
     end
 
     def template_class
-      templated_class_name = "#{self.class.parent}::Template"
-      templated_class = templated_class_name.constantize
-      templated_class
+      self.class.template_class
     end
+
+
   end
 
 

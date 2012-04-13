@@ -7,6 +7,9 @@ module ActiveWorker
 
     field :name, :type => String
 
+    scope :with_names, -> {where(:name.exists => true)}
+
+
     def name_from_class
       self.class.to_s.split("::")[0..-2].join(" ")
     end
@@ -17,6 +20,8 @@ module ActiveWorker
       self.class.fields_for_configuration.each do |field|
         configuration.send("#{field}=",self.send(field))
       end
+
+      configuration.template_name = name
 
       child_template_ids.each do |child_id|
         child = Template.find(child_id)
