@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = "active_worker"
-  s.version = "0.1.0"
+  s.version = "0.3.0"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["perf"]
-  s.date = "2012-04-02"
+  s.date = "2012-04-25"
   s.description = "Uses a Configuration/Controller pattern to allow easy implementation and organziation of multi-tier distributed workloads."
   s.email = "perf@skarven.net"
   s.extra_rdoc_files = [
@@ -39,13 +39,17 @@ Gem::Specification.new do |s|
     "lib/active_worker/job_queue/run_remotely.rb",
     "lib/active_worker/notification_event.rb",
     "lib/active_worker/templatable.rb",
+    "lib/active_worker/template.rb",
+    "test/acts_as_root_object_test.rb",
     "test/mongoid.yml",
     "test/test_configuration.rb",
     "test/test_event.rb",
     "test/test_failure_event.rb",
+    "test/test_finished_event.rb",
     "test/test_helper.rb",
     "test/test_job_executer.rb",
-    "test/test_run_remotely.rb"
+    "test/test_run_remotely.rb",
+    "test/test_template.rb"
   ]
   s.homepage = "http://github.com/ryanmcgarvey/active_worker"
   s.licenses = ["MIT"]
@@ -60,7 +64,6 @@ Gem::Specification.new do |s|
       s.add_runtime_dependency(%q<mongoid>, [">= 0"])
       s.add_runtime_dependency(%q<bson_ext>, [">= 0"])
       s.add_runtime_dependency(%q<stalker>, [">= 0"])
-      s.add_runtime_dependency(%q<activesupport>, [">= 0"])
       s.add_development_dependency(%q<rdoc>, ["~> 3.12"])
       s.add_development_dependency(%q<bundler>, ["~> 1.0.0"])
       s.add_development_dependency(%q<jeweler>, ["~> 1.8.3"])
@@ -68,7 +71,6 @@ Gem::Specification.new do |s|
       s.add_dependency(%q<mongoid>, [">= 0"])
       s.add_dependency(%q<bson_ext>, [">= 0"])
       s.add_dependency(%q<stalker>, [">= 0"])
-      s.add_dependency(%q<activesupport>, [">= 0"])
       s.add_dependency(%q<rdoc>, ["~> 3.12"])
       s.add_dependency(%q<bundler>, ["~> 1.0.0"])
       s.add_dependency(%q<jeweler>, ["~> 1.8.3"])
@@ -77,7 +79,6 @@ Gem::Specification.new do |s|
     s.add_dependency(%q<mongoid>, [">= 0"])
     s.add_dependency(%q<bson_ext>, [">= 0"])
     s.add_dependency(%q<stalker>, [">= 0"])
-    s.add_dependency(%q<activesupport>, [">= 0"])
     s.add_dependency(%q<rdoc>, ["~> 3.12"])
     s.add_dependency(%q<bundler>, ["~> 1.0.0"])
     s.add_dependency(%q<jeweler>, ["~> 1.8.3"])
