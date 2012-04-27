@@ -98,6 +98,13 @@ module ActiveWorker
 
     end
 
+    test "can create started event" do
+      configuration = Configuration.create
+
+      configuration.started
+      assert_equal 1, StartedEvent.where(configuration_id: configuration.id).size
+    end
+
 
 
   end

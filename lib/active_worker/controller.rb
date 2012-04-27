@@ -7,6 +7,7 @@ module ActiveWorker
     def self.launch_thread(configuration_id, *args)
       config = Configuration.find(configuration_id)
       worker = new(config, *args)
+      worker.started
       worker.execute
       worker.finished
     end
@@ -23,6 +24,10 @@ module ActiveWorker
 
     def execute
       raise "Can't call execute on base controller #{configuration.inspect}'"
+    end
+
+    def started
+      configuration.started
     end
 
     def finished
