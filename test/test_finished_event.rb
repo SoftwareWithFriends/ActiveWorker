@@ -24,5 +24,12 @@ module ActiveWorker
       assert FinishedEvent.exists_for_configurations?(configs)
     end
 
+    test "finished message" do
+      configuration = Configuration.create
+      event = FinishedEvent.create(configuration: configuration)
+
+      assert_match /finished/, event.message
+    end
+
   end
 end

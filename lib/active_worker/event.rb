@@ -41,11 +41,11 @@ module ActiveWorker
 
     def set_message
       return if message
-      self.message = configuration.generate_message
+      self.message = generate_message
     end
 
     def generate_message
-      nil
+      "#{configuration.class.display_name} base message"
     end
 
   end
