@@ -5,7 +5,7 @@
 
 Gem::Specification.new do |s|
   s.name = "active_worker"
-  s.version = "0.4.0"
+  s.version = "0.3.0"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["perf"]
@@ -38,20 +38,17 @@ Gem::Specification.new do |s|
     "lib/active_worker/job_queue/job_executer.rb",
     "lib/active_worker/job_queue/run_remotely.rb",
     "lib/active_worker/notification_event.rb",
-    "lib/active_worker/started_event.rb",
     "lib/active_worker/templatable.rb",
     "lib/active_worker/template.rb",
     "test/acts_as_root_object_test.rb",
     "test/mongoid.yml",
     "test/test_configuration.rb",
-    "test/test_controller.rb",
     "test/test_event.rb",
     "test/test_failure_event.rb",
     "test/test_finished_event.rb",
     "test/test_helper.rb",
     "test/test_job_executer.rb",
     "test/test_run_remotely.rb",
-    "test/test_started_event.rb",
     "test/test_template.rb"
   ]
   s.homepage = "http://github.com/ryanmcgarvey/active_worker"
