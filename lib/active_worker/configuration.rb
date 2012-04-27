@@ -45,10 +45,6 @@ module ActiveWorker
       configurations.select {|c| c.renderable}
     end
 
-    def generate_message
-      "This is the base finished event message."
-    end
-
     def completed?
       FinishedEvent.where(configuration_id: id).count > 0
     end

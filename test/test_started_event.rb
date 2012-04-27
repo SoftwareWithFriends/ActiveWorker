@@ -13,5 +13,12 @@ module ActiveWorker
       assert_equal event, found_events.first
     end
 
+    test "started message" do
+      configuration = Configuration.create
+      event = StartedEvent.create(configuration: configuration)
+
+      assert_match /started/, event.message
+    end
+
   end
 end
