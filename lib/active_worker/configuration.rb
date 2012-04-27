@@ -55,6 +55,10 @@ module ActiveWorker
       FinishedEvent.where(configuration_id: id).count > 0
     end
 
+    def started
+      StartedEvent.create(configuration: self)
+    end
+
     def finished
       FinishedEvent.create(configuration: self)
     end
@@ -96,8 +100,5 @@ module ActiveWorker
       end
       documents
     end
-
-
-
   end
 end

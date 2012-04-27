@@ -16,7 +16,6 @@ module ActiveWorker
     test "started message" do
       configuration = Configuration.create
       event = StartedEvent.create(configuration: configuration)
-
       assert_match /started/, event.message
     end
 
