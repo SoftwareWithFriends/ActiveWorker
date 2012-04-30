@@ -103,6 +103,7 @@ module ActiveWorker
 
       configuration.started
       assert_equal 1, StartedEvent.where(configuration_id: configuration.id).size
+      assert_match /#{configuration.event_name}/,StartedEvent.where(configuration_id: configuration.id).first.message
     end
 
     test "can create finished event" do
@@ -110,6 +111,7 @@ module ActiveWorker
 
       configuration.finished
       assert_equal 1, FinishedEvent.where(configuration_id: configuration.id).size
+      assert_match /#{configuration.event_name}/,FinishedEvent.where(configuration_id: configuration.id).first.message
     end
 
   end

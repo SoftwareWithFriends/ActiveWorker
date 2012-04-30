@@ -37,14 +37,14 @@ module ActiveWorker
       name.split("::").join(" ")
     end
 
-    def self.event_name
-      parts = name.split("::")
-      parts.pop
-      parts.join(" ")
-    end
-
     def self.css_name
       name.split("::").join("_")
+    end
+
+    def event_name
+      parts = self.class.name.split("::")
+      parts.pop
+      parts.join(" ")
     end
 
     def renderable_configurations

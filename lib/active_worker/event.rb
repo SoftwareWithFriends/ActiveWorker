@@ -45,7 +45,7 @@ module ActiveWorker
     end
 
     def generate_message
-      "#{configuration.class.display_name} base message"
+      "#{configuration.event_name} base message"
     end
 
   end
