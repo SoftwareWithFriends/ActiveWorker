@@ -5,7 +5,7 @@
 
 Gem::Specification.new do |s|
   s.name = "active_worker"
-  s.version = "0.6.0"
+  s.version = "0.7.0"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["perf"]
@@ -29,6 +29,7 @@ Gem::Specification.new do |s|
     "lib/active_worker.rb",
     "lib/active_worker/behavior/acts_as_root_object.rb",
     "lib/active_worker/behavior/has_root_object.rb",
+    "lib/active_worker/behavior/hashable.rb",
     "lib/active_worker/configuration.rb",
     "lib/active_worker/controller.rb",
     "lib/active_worker/event.rb",
