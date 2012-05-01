@@ -82,6 +82,18 @@ module ActiveWorker
       assert_equal config8.id, top_config["configurations"][0]["configurations"][0]["configurations"][0]["_id"]
     end
 
+    test "can get renderable hash for given configuration" do
+      config = TopConfig.create renderable: true
+      config2 = ChildConfig.create parent_configuration: config, renderable: true
+      config3 = ChildConfig.create parent_configuration: config, renderable: false
+
+      top_config = Configuration.renderable_hash_for_configuration(config.id)
+
+      assert_equal config.id, top_config["_id"]
+      assert_equal 1, top_config["configurations"].size
+      assert_equal config2.id, top_config["configurations"][0]["_id"]
+    end
+
     test "can load hashes from configurations that no longer exist" do
       module SoonToNotExist
         class TopConfig < Configuration
