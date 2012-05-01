@@ -61,6 +61,26 @@ module ActiveWorker
       assert_equal config5.id, top_config["configurations"][1]["configurations"][1]["_id"]
     end
 
+    test "can get renderable configuration hierarchy" do
+      root = Rootable.create
+      config = TopConfig.create root_object: root, renderable: true
+      config2 = ChildConfig.create parent_configuration: config, renderable: true
+      config3 = ChildConfig.create parent_configuration: config, renderable: false
+      config4 = ChildConfig.create parent_configuration: config3, renderable: true
+      config5 = ChildConfig.create parent_configuration: config3, renderable: false
+      config6 = ChildConfig.create parent_configuration: config2, renderable: true
+      config7 = ChildConfig.create parent_configuration: config6, renderable: false
+      config8 = ChildConfig.create parent_configuration: config6, renderable: true
+
+      top_config = Configuration.get_renderable_hash_by_root_object(root).first
+      assert_equal config.id, top_config["_id"]
+      assert_equal 1, top_config["configurations"].size
+      assert_equal config2.id, top_config["configurations"][0]["_id"]
+
+      assert_equal config6.id, top_config["configurations"][0]["configurations"][0]["_id"]
+      assert_equal 1, top_config["configurations"][0]["configurations"].size
+      assert_equal config8.id, top_config["configurations"][0]["configurations"][0]["configurations"][0]["_id"]
+    end
 
     test "can load hashes from configurations that no longer exist" do
       module SoonToNotExist

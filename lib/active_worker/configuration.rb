@@ -95,7 +95,7 @@ module ActiveWorker
     def self.get_renderable_children_for(col, parent_configuration_id)
       documents = []
       col.find("parent_configuration_id" => parent_configuration_id, "renderable" => true).each do |doc|
-        doc["configurations"] = get_children_for(col, doc["_id"])
+        doc["configurations"] = get_renderable_children_for(col, doc["_id"])
         documents << doc
       end
       documents
