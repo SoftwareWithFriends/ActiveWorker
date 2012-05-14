@@ -14,6 +14,7 @@ module ActiveWorker
 
       assert_equal original_event, event
       assert_equal exception.backtrace.join("\n"), event.stack_trace
+      assert_equal "Mocha::Mock", event.error_type
     end
 
 
