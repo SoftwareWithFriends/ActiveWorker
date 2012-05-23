@@ -17,8 +17,10 @@ module ActiveWorker
     alias_method :root_owner, :parent_configuration
 
     field :polling_interval, :type => Integer, :default => 1
-
     field :renderable, :type => Boolean, :default => false
+    field :flags, type: Hash, default: {}
+
+    before_save :set_flags
 
     scope :mine, ->(parent_config) {where(parent_configuration_id: parent_config.id )}
 
@@ -64,6 +66,10 @@ module ActiveWorker
       FinishedEvent.create(configuration: self)
     end
 
+    def set_flags
+      self.flags = parent_configuration.flags if parent_configuration
+      true
+    end
 
   end
 end

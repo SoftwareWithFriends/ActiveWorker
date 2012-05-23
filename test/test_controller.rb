@@ -31,5 +31,14 @@ module ActiveWorker
       assert_equal 1, FinishedEvent.where(configuration_id: configuration.id).size
 
     end
+
+    test "calls setup during initialization" do
+      Controller.any_instance.expects(:setup)
+      configuration = Configuration.create
+      controller = Controller.new(configuration)
+      controller.started
+      assert_equal 1, StartedEvent.where(configuration_id: configuration.id).size
+
+    end
   end
 end

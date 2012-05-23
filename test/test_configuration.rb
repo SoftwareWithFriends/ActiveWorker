@@ -43,6 +43,16 @@ module ActiveWorker
       assert_equal root, config2.root_object
     end
 
+    test "passes down flags when saved" do
+      root = Rootable.create flags: {"analyze_performance" => true}
+      config = TopConfig.new root_object: root, flags: root.flags
+      config2 = ChildConfig.new parent_configuration: config
+
+      config.save!
+      config2.save!
+      assert config2.flags["analyze_performance"]
+    end
+
     test "can get configuration hierarchy" do
       root = Rootable.create
       config = TopConfig.create root_object: root
@@ -145,6 +155,8 @@ module ActiveWorker
       assert_equal 1, FinishedEvent.where(configuration_id: configuration.id).size
       assert_match /#{configuration.event_name}/,FinishedEvent.where(configuration_id: configuration.id).first.message
     end
+
+
 
   end
 end

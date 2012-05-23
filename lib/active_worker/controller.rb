@@ -20,6 +20,11 @@ module ActiveWorker
 
     def initialize(configuration)
       @configuration = configuration
+      setup
+    end
+
+    def setup
+
     end
 
     def started

@@ -35,7 +35,7 @@ module ActiveWorker
       assert root.completed?
     end
 
-    test "renderable configuration hases returns array of configuration hashess" do
+    test "renderable configuration hashes returns array of configuration hashes" do
       root = Rootable.create
       topconfig1 = root.configurations.create({},TemplatableTopConfig)
       topconfig2 = root.configurations.create({},TemplatableTopConfig)
@@ -63,6 +63,29 @@ module ActiveWorker
       assert_equal 1, renderable_hashes.size
       assert_equal 1, renderable_hashes[0]["configurations"].size
 
+    end
+
+    test "sets flags on immediate child configurations" do
+      root = Rootable.create flags: {"flag" => true}
+
+      topconfig1 = root.configurations.create({},TemplatableTopConfig)
+      topconfig2 = root.configurations.create({},TopConfig)
+      root.set_flags
+      topconfig1.reload
+      topconfig2.reload
+
+      templatable_child_config1 = topconfig1.configurations.create({},TemplatableChildConfig)
+      child_config1 = topconfig1.configurations.create({},ChildConfig)
+
+      templatable_child_config2 = topconfig2.configurations.create({},TemplatableChildConfig)
+      child_config2 = topconfig2.configurations.create({},ChildConfig)
+
+      assert topconfig1.flags["flag"]
+      assert topconfig2.flags["flag"]
+      assert templatable_child_config1.flags["flag"]
+      assert child_config1.flags["flag"]
+      assert templatable_child_config2.flags["flag"]
+      assert child_config2.flags["flag"]
     end
 
   end

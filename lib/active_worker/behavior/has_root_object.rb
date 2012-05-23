@@ -21,6 +21,7 @@ module ActiveWorker
         return unless root_owner
         self.root_object_id = root_owner.get_root_object_id
         self.root_object_type = root_owner.root_object_type
+        true
       end
 
     end
