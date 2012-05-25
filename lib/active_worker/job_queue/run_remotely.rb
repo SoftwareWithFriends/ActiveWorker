@@ -2,6 +2,21 @@ module ActiveWorker
   module JobQueue
     module RunRemotely
 
+      THREADED = "threaded"
+      STALKER  = "stalker"
+
+
+
+      def self.worker_mode=(mode)
+        @@worker_mode = mode
+      end
+
+      def self.worker_mode
+        @@worker_mode
+      end
+
+      self.worker_mode = STALKER
+
       class RemoteRunner
         def initialize(host,klass)
           @host = host
@@ -10,7 +25,14 @@ module ActiveWorker
 
         def method_missing(method,*params)
           args = construct_args(method,params)
-          Stalker.enqueue(queue,args,{:ttr => 0})
+          case RunRemotely.worker_mode
+            when THREADED
+              Thread.new do
+                ActiveWorker::JobQueue::JobExecuter.execute_task_from_args(args)
+              end
+            when STALKER
+              Stalker.enqueue(queue,args,{:ttr => 0})
+          end
         end
 
         def queue
