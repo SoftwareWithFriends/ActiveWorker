@@ -80,15 +80,34 @@ module ActiveWorker
 
         RunRemotely.worker_mode = RunRemotely::THREADED
 
-
-
         TestClass.expects(:test_method)
 
         thread = TestClass.run_remotely.test_method(param1,param2)
         thread.join
       end
 
-    end
-  end
+      test "exceptions are handled in every thread" do
+        begin
 
+          ct = Thread.new do
+            begin
+              gt = Thread.new do
+                raise
+              end
+              gt.join
+              sleep(10)
+            rescue Exception => e
+              puts "\nhandle from child"
+            end
+          end
+          ct.join
+          sleep(10)
+        rescue Exception => e
+          puts "\nhandle from main thread"
+        end
+        #sleep(1)
+      end
+    end
+
+  end
 end
