@@ -4,7 +4,7 @@ module ActiveWorker
 
       THREADED = "threaded"
       STALKER  = "stalker"
-
+      RESQUE   = "resque"
 
 
       def self.worker_mode=(mode)
@@ -15,7 +15,7 @@ module ActiveWorker
         @@worker_mode
       end
 
-      self.worker_mode = STALKER
+      self.worker_mode = RESQUE
 
       class RemoteRunner
         def initialize(host,klass)
@@ -32,6 +32,8 @@ module ActiveWorker
               end
             when STALKER
               Stalker.enqueue(queue,args,{:ttr => 0})
+            when RESQUE
+              Resque.enqueue(JobExecuter,args)
           end
         end
 

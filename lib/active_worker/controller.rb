@@ -18,6 +18,7 @@ module ActiveWorker
       FailureEvent.from_error(configuration, error)
     end
 
+
     def initialize(configuration)
       @configuration = configuration
       setup

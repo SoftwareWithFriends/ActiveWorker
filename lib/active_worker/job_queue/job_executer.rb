@@ -2,6 +2,14 @@ module ActiveWorker
   module JobQueue
     class JobExecuter
       Thread.abort_on_exception = true
+
+      @queue = :execute
+
+      def self.perform(args)
+        execute_task_from_args(args)
+      end
+
+
       def self.execute_task_from_args(args)
         class_name = args["class_name"]
         method     = args["method"]
