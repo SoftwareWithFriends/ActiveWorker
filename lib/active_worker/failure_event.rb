@@ -6,7 +6,7 @@ module ActiveWorker
 
     def self.from_error(configuration, error)
       constructor_options = {
-          :message => "#{self}: #{error.message}",
+          :message => "#{configuration.event_name} FAILED: #{error.message}",
           :stack_trace => error.backtrace.join("\n"),
           :configuration => configuration,
           :error_type => error.class.name

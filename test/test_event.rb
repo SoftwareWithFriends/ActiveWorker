@@ -29,6 +29,13 @@ module ActiveWorker
       assert_equal "test", event.host
     end
 
+    test "sets pid" do
+      config = Configuration.create
+      Event.any_instance.stubs(:get_pid).returns(12345)
+      event = Event.create configuration: config
+      assert_equal 12345, event.process_id
+    end
+
     test "events must be owned by a configuration" do
       assert_raise Mongoid::Errors::Validations do
         Event.create!

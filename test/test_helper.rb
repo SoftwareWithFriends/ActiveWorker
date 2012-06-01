@@ -84,3 +84,5 @@ class ActiveSupport::TestCase
   end
 
 end
+
+ActiveWorker::JobQueue::JobExecuter.stubs(:log_error)
