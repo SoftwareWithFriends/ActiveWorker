@@ -158,6 +158,7 @@ module ActiveWorker
 
     test "can be notified" do
       configuration = Configuration.create
+      assert_equal false, configuration.notified?
       configuration.notify
       assert configuration.notified?
     end
