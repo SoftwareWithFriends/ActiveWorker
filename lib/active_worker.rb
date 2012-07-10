@@ -1,4 +1,5 @@
 require 'mongoid'
+require 'resque'
 
 require 'active_worker/job_queue/run_remotely'
 require 'active_worker/job_queue/job_executer'

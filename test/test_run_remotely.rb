@@ -86,6 +86,26 @@ module ActiveWorker
         thread.join
       end
 
+      test "can set worker mode to resque" do
+        param1 = 1
+        param2 = 2
+
+        class_name = TestClass.to_s
+        method     = "test_method"
+        params     = [param1,param2]
+
+        args = {}
+        args["class_name"] = class_name
+        args["method"] = method
+        args["params"] = params
+
+        RunRemotely.worker_mode = RunRemotely::RESQUE
+
+        Resque.expects(:enqueue).with(JobExecuter,args)
+
+        TestClass.run_remotely.test_method(param1,param2)
+      end
+
     end
 
   end

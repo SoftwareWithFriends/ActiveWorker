@@ -20,3 +20,4 @@ end
 gem 'mongoid', :git => 'https://github.com/mongoid/mongoid.git'
 gem 'bson_ext' #, '=1.4.0'
 gem 'stalker', :git => "git://github.com/SoftwareWithFriends/stalker.git"
+gem 'resque'
