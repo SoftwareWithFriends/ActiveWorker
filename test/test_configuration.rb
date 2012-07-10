@@ -156,6 +156,13 @@ module ActiveWorker
       assert_match /#{configuration.event_name}/,FinishedEvent.where(configuration_id: configuration.id).first.message
     end
 
+    test "can be notified" do
+      configuration = Configuration.create
+      assert_equal false, configuration.notified?
+      configuration.notify
+      assert configuration.notified?
+    end
+
 
 
   end

@@ -66,6 +66,14 @@ module ActiveWorker
       FinishedEvent.create(configuration: self)
     end
 
+    def notify
+      NotificationEvent.create(configuration: self)
+    end
+
+    def notified?
+      NotificationEvent.where(configuration_id: id).count > 0
+    end
+
     def set_flags
       self.flags = parent_configuration.flags if parent_configuration
       true

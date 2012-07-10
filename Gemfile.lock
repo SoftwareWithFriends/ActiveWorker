@@ -1,6 +1,6 @@
 GIT
   remote: git://github.com/SoftwareWithFriends/stalker.git
-  revision: d777ccb731008ca6643e6e749ce5bf1b1c04592f
+  revision: e29cbcbdb83fbf42641d782972e017accedbf803
   specs:
     stalker (0.10.1)
       beanstalk-client
@@ -38,7 +38,7 @@ GEM
       rake
       rdoc
     json (1.6.6)
-    json_pure (1.6.6)
+    json_pure (1.7.3)
     metaclass (0.0.1)
     minitest (2.11.4)
     minitest-reporters (0.5.1)
@@ -62,7 +62,7 @@ PLATFORMS
 DEPENDENCIES
   activesupport
   bson_ext
-  bundler (~> 1.0.0)
+  bundler
   jeweler (~> 1.8.3)
   minitest-reporters
   mocha
