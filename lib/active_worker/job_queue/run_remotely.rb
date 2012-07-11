@@ -15,7 +15,7 @@ module ActiveWorker
         @@worker_mode
       end
 
-      self.worker_mode = STALKER
+      self.worker_mode = RESQUE
 
       class RemoteRunner
         def initialize(host,klass)
