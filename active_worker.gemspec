@@ -5,7 +5,7 @@
 
 Gem::Specification.new do |s|
   s.name = "active_worker"
-  s.version = "0.17.0"
+  s.version = "0.18.0"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["perf"]
@@ -43,6 +43,7 @@ Gem::Specification.new do |s|
     "lib/active_worker/started_event.rb",
     "lib/active_worker/templatable.rb",
     "lib/active_worker/template.rb",
+    "lib/active_worker/termination_event.rb",
     "test/acts_as_root_object_test.rb",
     "test/mongoid.yml",
     "test/test_configuration.rb",
