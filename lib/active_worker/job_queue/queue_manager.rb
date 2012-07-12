@@ -17,13 +17,16 @@ module ActiveWorker
 
       def create_job_hash_from_worker(worker)
         pid = worker.to_s.split(":")[1]
-        {"host" => worker.hostname, "pid" => pid, "params" =>  params_from_worker(worker)}
+        {"host" => worker.hostname, "pid" => pid, "args" =>  args_from_worker(worker)}
       end
 
       def params_from_worker(worker)
-        worker.job["payload"]["args"].first["params"]
+        args_from_worker(worker)["params"]
       end
 
+      def args_from_worker(worker)
+        worker.job["payload"]["args"].first
+      end
     end
   end
 end

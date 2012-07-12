@@ -17,7 +17,7 @@ module ActiveWorker
 
         job_hash = QueueManager.new.create_job_hash_from_worker(worker)
 
-        expected_hash = {"host" => "localhost", "pid" => config_id.to_s, "params" => [config_id]}
+        expected_hash = {"host" => "localhost", "pid" => config_id.to_s, "args" => {"params" => [config_id]}}
         assert_equal expected_hash, job_hash
       end
 
