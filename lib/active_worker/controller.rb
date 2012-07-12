@@ -21,7 +21,7 @@ module ActiveWorker
     def self.handle_termination(params)
       configuration_id = params.shift
       configuration = Configuration.find(configuration_id)
-      FailureEvent.from_termination(configuration)
+      TerminationEvent.from_termination(configuration)
     end
 
 

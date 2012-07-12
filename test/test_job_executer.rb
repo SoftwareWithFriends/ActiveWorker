@@ -17,6 +17,10 @@ module ActiveWorker
         end
       end
 
+      setup do
+        JobExecuter.stubs(:log_error)
+      end
+
       test "can execute command from args" do
         param1 = 1
         param2 = 2
@@ -45,6 +49,15 @@ module ActiveWorker
         assert_raise SignalException do
           JobExecuter.execute_task_from_args(args)
         end
+      end
+
+      test "can handle termination" do
+        config = Configuration.create
+        JobExecuter.expects(:exit)
+        JobExecuter.handle_termination(ActiveWorker::Controller, [config.to_param])
+
+        assert TerminationEvent.where(configuration_id: config.id).first
+
       end
 
     end
