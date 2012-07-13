@@ -2,7 +2,11 @@ module ActiveWorker
   module JobQueue
     class QueueManager
 
-      def active_jobs(configuration_ids)
+      def active_jobs
+        Resque.working.map {|w| create_job_hash_from_worker(w)}
+      end
+
+      def active_jobs_for_configurations(configuration_ids)
         workers = Resque.working.select do|w|
           configuration_ids.include? configuration_id_from_worker(w)
         end
