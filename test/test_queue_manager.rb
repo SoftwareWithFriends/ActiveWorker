@@ -17,7 +17,7 @@ module ActiveWorker
 
         job_hash = QueueManager.new.create_job_hash_from_worker(worker)
 
-        expected_hash = {"host" => "localhost", "pid" => config_id.to_s, "args" => {"params" => [config_id]}}
+        expected_hash = {"host" => "localhost", "queues" => ["execute","localhost_execute"], "pid" => config_id.to_s, "args" => {"params" => [config_id]}}
         assert_equal expected_hash, job_hash
       end
 
@@ -51,8 +51,8 @@ module ActiveWorker
 
         worker = mock
         worker.stubs(:job).returns(job)
-        worker.stubs(:hostname).returns("localhost")
-        worker.stubs(:to_s).returns("localhost:#{config_id}:*")
+        worker.stubs(:hostname).returns("bad_hostname")
+        worker.stubs(:to_s).returns("localhost:#{config_id}:execute,localhost_execute")
         worker
       end
 
