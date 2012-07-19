@@ -1,9 +1,8 @@
 require_relative "test_helper"
 
+
 module ActiveWorker
   class ConfigurationTest < ActiveSupport::TestCase
-
-
 
     test "can scope a child configuration type using mine" do
       parent_config = TopConfig.create(top_field: "top field")
@@ -102,6 +101,24 @@ module ActiveWorker
       assert_equal config.id, top_config["_id"]
       assert_equal 1, top_config["configurations"].size
       assert_equal config2.id, top_config["configurations"][0]["_id"]
+      assert_equal "ActiveWorker::TopConfig", top_config["_type"]
+    end
+
+
+    test "Base Configurations can be hashable with type" do
+      config = Configuration.create renderable: true
+      config2 = Configuration.create parent_configuration: config, renderable: true
+      config3 = Configuration.create parent_configuration: config, renderable: false
+
+      top_config = Configuration.renderable_hash_for_configuration(config.id)
+
+      assert_equal config.id, top_config["_id"]
+      assert_equal 1, top_config["configurations"].size
+      assert_equal config2.id, top_config["configurations"][0]["_id"]
+
+      assert_equal "ActiveWorkerConfiguration", top_config["_type"]
+      assert_equal "ActiveWorkerConfiguration", top_config["configurations"][0]["_type"]
+
     end
 
     test "can load hashes from configurations that no longer exist" do

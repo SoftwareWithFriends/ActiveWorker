@@ -1,13 +1,28 @@
-settings: &settings
-  autocreate_indexes: true
-  identity_map_enabled: true
-
-defaults: &defaults
-  <<: *settings
-  host: localhost
-  port: 27017
-
 test:
-  <<: *defaults
-  database: active_worker_test
-  logger: false
+  sessions:
+    default:
+      database: active_worker_test
+      hosts:
+        - localhost:27017
+      options:
+        consistency: :strong
+        safe: true
+        identity_map_enabled: true
+  options:
+    preload_models: true
+
+
+
+#settings: &settings
+#  autocreate_indexes: true
+#  identity_map_enabled: true
+#
+#defaults: &defaults
+#  <<: *settings
+#  host: localhost
+#  port: 27017
+#
+#test:
+#  <<: *defaults
+#  database: active_worker_test
+#  logger: false

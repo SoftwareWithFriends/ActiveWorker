@@ -26,7 +26,7 @@ module ActiveWorker
 
         Resque.expects(:working).returns(mock_workers)
 
-        jobs = manager.active_jobs(configuration_ids)
+        jobs = manager.active_jobs_for_configurations(configuration_ids)
 
         assert_equal 4, jobs.size
         assert_equal [1,2,3,4], jobs.map {|j| j["pid"].to_i}
