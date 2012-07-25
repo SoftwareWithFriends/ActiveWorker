@@ -5,7 +5,7 @@ module ActiveWorker
       def self.included(base)
         base.before_save :set_root_object
         base.belongs_to :root_object, :polymorphic => true
-        base.index(:root_object_id => -1)
+        base.index({:root_object_id => -1},{:background => true})
       end
 
       def root_owner
