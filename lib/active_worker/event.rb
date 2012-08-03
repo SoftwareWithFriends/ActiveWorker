@@ -15,6 +15,7 @@ module ActiveWorker
     field :message, :type => String
     field :host, :type => String
     field :process_id, :type => Integer
+    field :worker_pid, :type => Integer
 
     scope :for_root_object_id, lambda {|root_object_id| where(:root_object_id => root_object_id).descending(:created_at)}
 
@@ -38,10 +39,17 @@ module ActiveWorker
     def set_process_information
       self.host = HostInformation.hostname
       self.process_id = get_pid
+      self.worker_pid = get_worker_pid
     end
 
     def get_pid
       Process.pid.to_i
+    end
+
+    def get_worker_pid
+      worker = JobQueue::QueueManager.new.active_jobs_for_configurations([configuration.to_param]).first
+      return worker["pid"] if worker
+      nil
     end
 
     def set_message
