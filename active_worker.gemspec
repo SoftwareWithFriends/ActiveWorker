@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = "active_worker"
-  s.version = "0.24.0"
+  s.version = "0.25.0"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["perf"]
-  s.date = "2012-08-03"
+  s.date = "2012-08-10"
   s.description = "Uses a Configuration/Controller pattern to allow easy implementation and organziation of multi-tier distributed workloads."
   s.email = "perf@skarven.net"
   s.extra_rdoc_files = [
