@@ -79,5 +79,14 @@ module ActiveWorker
       true
     end
 
+    def [](attribute)
+      respond_to?(attribute) ? send(attribute) : nil
+    end
+
+    def []=(attribute, value)
+      send("#{attribute.to_s}=", value)
+    end
+
+
   end
 end

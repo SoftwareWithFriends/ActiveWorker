@@ -180,6 +180,19 @@ module ActiveWorker
       assert configuration.notified?
     end
 
+    test "can treat as hash" do
+      config = Configuration.create value: "value"
+
+      assert_equal "value", config[:value]
+
+      config[:value]=  "value2"
+
+      assert_equal "value2", config[:value]
+
+      assert_nil config[:bad_method]
+
+    end
+
 
 
   end
