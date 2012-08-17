@@ -79,14 +79,18 @@ module ActiveWorker
       true
     end
 
-    def [](attribute)
-      respond_to?(attribute) ? send(attribute) : nil
+    def self.config_field(name,*args)
+      field name, *args
     end
 
-    def []=(attribute, value)
-      send("#{attribute.to_s}=", value)
+    def self.template_field(name,*args)
+      field name, *args
+      template_fields << name
     end
 
+    def self.template_fields
+      @template_fields ||= []
+    end
 
   end
 end

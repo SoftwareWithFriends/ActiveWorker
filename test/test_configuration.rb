@@ -104,7 +104,6 @@ module ActiveWorker
       assert_equal "ActiveWorker::TopConfig", top_config["_type"]
     end
 
-
     test "Base Configurations can be hashable with type" do
       config = Configuration.create renderable: true
       config2 = Configuration.create parent_configuration: config, renderable: true
