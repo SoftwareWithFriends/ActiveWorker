@@ -2,10 +2,8 @@ module ActiveWorker
   module Templatable
 
     module ClassMethods
-      def template_class
-        templated_class_name = "#{parent}::Template"
-        templated_class = templated_class_name.constantize
-        templated_class
+      def templates_with_names
+        Template.with_names(self)
       end
     end
 
@@ -16,6 +14,8 @@ module ActiveWorker
 
       base.extend(ClassMethods)
     end
+
+
 
     def find_template
       child_template_ids = configurations.map(&:find_template).map(&:id)

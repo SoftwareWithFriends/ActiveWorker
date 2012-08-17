@@ -8,10 +8,14 @@ module ActiveWorker
     field :name
     field :configuration_type
 
-    scope :with_names, where(:name.exists => true)
+    scope :with_names, ->(configuration_class) { where(:name.exists => true, :configuration_type => configuration_class.name)}
 
-    def name_from_class
-      self.class.to_s.split("::")[0..-2].join(" ")
+    def name_for_display
+      if(name && not(name.empty?))
+        name
+      else
+        configuration_type.split("::")[0..-2].join(" ")
+      end
     end
 
     def build_configuration
