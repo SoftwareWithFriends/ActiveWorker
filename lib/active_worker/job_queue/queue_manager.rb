@@ -3,7 +3,7 @@ module ActiveWorker
     class QueueManager
 
       def active_jobs
-        Resque.working.map {|w| create_job_hash_from_worker(w)}
+        Resque.working.map {|w| create_job_hash_from_worker(w)}.compact
       end
 
       def active_jobs_for_configurations(configuration_ids)
@@ -16,7 +16,8 @@ module ActiveWorker
       end
 
       def configuration_id_from_worker(worker)
-        params_from_worker(worker).first
+        params = params_from_worker(worker)
+        params.first if params
       end
 
       def create_job_hash_from_worker(worker)
@@ -24,15 +25,21 @@ module ActiveWorker
         host = worker_id[0]
         pid = worker_id[1]
         queues = worker_id[2].split(",")
-        {"host" => host, "queues" => queues, "pid" => pid, "args" =>  args_from_worker(worker)}
+        args = args_from_worker(worker)
+
+        if worker_id && host && pid && queues && args
+          return {"host" => host, "queues" => queues, "pid" => pid, "args" => args }
+        end
       end
 
       def params_from_worker(worker)
-        args_from_worker(worker)["params"]
+        args = args_from_worker(worker)
+        args["params"] if args
       end
 
       def args_from_worker(worker)
-        worker.job["payload"]["args"].first
+        payload = worker.job["payload"]
+        payload["args"].first if payload
       end
     end
   end

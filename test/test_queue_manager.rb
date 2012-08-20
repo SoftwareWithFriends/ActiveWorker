@@ -17,11 +17,15 @@ module ActiveWorker
 
         job_hash = QueueManager.new.create_job_hash_from_worker(worker)
 
-        expected_hash = {"host" => "localhost", "queues" => ["execute","localhost_execute"], "pid" => config_id.to_s, "args" => {"params" => [config_id]}}
+        expected_hash = {"host" => "localhost",
+                         "queues" => ["execute", "localhost_execute"],
+                         "pid" => config_id.to_s,
+                         "args" => {"params" => [config_id]}}
+
         assert_equal expected_hash, job_hash
       end
 
-      test "can get list of active jobs" do
+      test "can get list of active jobs for configurations" do
         manager = QueueManager.new
 
         Resque.expects(:working).returns(mock_workers)
@@ -29,26 +33,61 @@ module ActiveWorker
         jobs = manager.active_jobs_for_configurations(configuration_ids)
 
         assert_equal 4, jobs.size
-        assert_equal [1,2,3,4], jobs.map {|j| j["pid"].to_i}
+        assert_equal [1, 2, 3, 4], jobs.map { |j| j["pid"].to_i }
 
       end
 
-      def mock_workers
+      test "does not report on jobless workers" do
+        config_id = 5
+        worker = mock_worker(config_id, {})
+
+        job_hash = QueueManager.new.create_job_hash_from_worker(worker)
+
+        assert_nil job_hash
+
+      end
+
+      test "active workers can lose their jobs" do
+        manager = QueueManager.new
+
+        workers = mock_workers + [mock_worker(11, {})]
+
+        Resque.expects(:working).returns(workers)
+
+        ids = configuration_ids + [11]
+
+        jobs = manager.active_jobs_for_configurations(ids)
+
+        assert_equal 4, jobs.size
+        assert_equal [1, 2, 3, 4], jobs.map { |j| j["pid"].to_i }
+      end
+
+      test "does not return workers without jobs" do
+        manager = QueueManager.new
+
+        workers = mock_workers(4) + [mock_worker(11, {})]
+
+        Resque.expects(:working).returns(workers)
+
+        jobs = manager.active_jobs
+
+        assert_equal 4, jobs.size
+        assert_equal [0, 1, 2, 3], jobs.map { |j| j["pid"].to_i }
+      end
+
+      def mock_workers(num_workers = 10)
         workers = []
-        10.times do |num|
+        num_workers.times do |num|
           workers << mock_worker(num)
         end
         workers
       end
 
       def configuration_ids
-        [1,2,3,4,20]
+        [1, 2, 3, 4, 20]
       end
 
-      def mock_worker(config_id)
-        args = [{"params" => [config_id]}]
-        job = {"payload" => {"args" => args}}
-
+      def mock_worker(config_id, job = mock_job(config_id))
         worker = mock
         worker.stubs(:job).returns(job)
         worker.stubs(:hostname).returns("bad_hostname")
@@ -56,8 +95,10 @@ module ActiveWorker
         worker
       end
 
-
-
+      def mock_job(config_id)
+        args = [{"params" => [config_id]}]
+        job = {"payload" => {"args" => args}}
+      end
 
 
     end
