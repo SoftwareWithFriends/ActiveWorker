@@ -6,8 +6,8 @@ module ActiveWorker
         configs = []
         col = get_mongoid_collection
         col.find("root_object_id" => root_object.id, "parent_configuration_id" => nil).each do |config|
-          set_type(config, col)
           config["configurations"] = get_children_for(col, config["_id"])
+          canonicalize(config, col)
           configs << config
         end
         configs
@@ -16,8 +16,8 @@ module ActiveWorker
       def get_children_for(col, parent_configuration_id)
         configs = []
         col.find("parent_configuration_id" => parent_configuration_id).each do |config|
-          set_type(config, col)
           config["configurations"] = get_children_for(col, config["_id"])
+          canonicalize(config, col)
           configs << config
         end
         configs
@@ -29,8 +29,8 @@ module ActiveWorker
         configs = []
         col = get_mongoid_collection
         col.find("root_object_id" => root_object.id, "parent_configuration_id" => nil, "renderable" => true).each do |config|
-          set_type(config, col)
           config["configurations"] = get_renderable_children_for(col, config["_id"])
+          canonicalize(config, col)
           configs << config
         end
         configs
@@ -39,23 +39,24 @@ module ActiveWorker
       def renderable_hash_for_configuration(configuration_id)
         col = get_mongoid_collection
         config = col.find("_id" => configuration_id).first
-        set_type(config, col)
         config["configurations"] = get_renderable_children_for(col, config["_id"])
+        canonicalize(config, col)
         config
       end
 
       def get_renderable_children_for(col, parent_configuration_id)
         configs = []
         col.find("parent_configuration_id" => parent_configuration_id, "renderable" => true).each do |config|
-          set_type(config, col)
           config["configurations"] = get_renderable_children_for(col, config["_id"])
+          canonicalize(config, col)
           configs << config
         end
         configs
       end
 
-      def set_type(config, col)
+      def canonicalize(config, col)
         config["_type"] ||= col.name.classify
+        config["_id"] = config["_id"].to_s
       end
 
 
