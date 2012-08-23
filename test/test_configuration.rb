@@ -161,7 +161,7 @@ module ActiveWorker
 
       configuration.started
       assert_equal 1, StartedEvent.where(configuration_id: configuration.to_param).size
-      assert_match /#{configuration.event_name}/,StartedEvent.where(configuration_id: configuration.to_param).first.message
+      assert_match /#{configuration.event_name}/, StartedEvent.where(configuration_id: configuration.to_param).first.message
     end
 
     test "can create finished event" do
@@ -169,7 +169,7 @@ module ActiveWorker
 
       configuration.finished
       assert_equal 1, FinishedEvent.where(configuration_id: configuration.to_param).size
-      assert_match /#{configuration.event_name}/,FinishedEvent.where(configuration_id: configuration.to_param).first.message
+      assert_match /#{configuration.event_name}/, FinishedEvent.where(configuration_id: configuration.to_param).first.message
     end
 
     test "can be notified" do
@@ -184,7 +184,7 @@ module ActiveWorker
 
       assert_equal "value", config[:value]
 
-      config[:value]=  "value2"
+      config[:value]= "value2"
 
       assert_equal "value2", config[:value]
 
@@ -192,6 +192,21 @@ module ActiveWorker
 
     end
 
+    test "can retrieve hash of expandable fields" do
+      class TestConfig < Configuration
+        config_field :config_field
+        template_field :template_field
+        field :other_field
+      end
+
+      config = TestConfig.create config_field: "config_field",
+                                 template_field: "template_field",
+                                 other_field: "other_field"
+
+      expected_expandable_fields = {"config_field" => "config_field",
+                                    "template_field" => "template_field"}
+      assert_equal expected_expandable_fields, config.expandable_fields
+    end
 
 
   end

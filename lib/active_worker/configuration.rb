@@ -32,17 +32,7 @@ module ActiveWorker
       []
     end
 
-    def self.controller_class
-      "#{self.parent}::Controller".constantize
-    end
 
-    def self.display_name
-      name.split("::").join(" ")
-    end
-
-    def self.css_name
-      name.split("::").join("_")
-    end
 
     def event_name
       parts = self.class.name.split("::")
@@ -79,17 +69,38 @@ module ActiveWorker
       true
     end
 
-    def self.config_field(name,*args)
-      field name, *args
+    def expandable_fields
+      attributes.select{|k,v| self.class.config_fields.include? k.to_sym}
+    end
+
+    def self.controller_class
+      "#{self.parent}::Controller".constantize
+    end
+
+    def self.display_name
+      name.split("::").join(" ")
+    end
+
+    def self.css_name
+      name.split("::").join("_")
     end
 
     def self.template_field(name,*args)
-      field name, *args
+      config_field(name, *args)
       template_fields << name
+    end
+
+    def self.config_field(name,*args)
+      field name, *args
+      config_fields << name
     end
 
     def self.template_fields
       @template_fields ||= []
+    end
+
+    def self.config_fields
+      @config_fields ||= []
     end
 
   end
