@@ -5,20 +5,24 @@ module ActiveWorker
     has_and_belongs_to_many :child_templates,  :class_name => "ActiveWorker::Template", :inverse_of => :parent_templates
     has_and_belongs_to_many :parent_templates, :class_name => "ActiveWorker::Template", :inverse_of => :child_templates
 
-    field :name, :type => String
+    field :name
+    field :configuration_type
 
-    scope :with_names, -> {where(:name.exists => true)}
+    scope :with_names, ->(configuration_class) { where(:name.exists => true, :configuration_type => configuration_class.name)}
 
-
-    def name_from_class
-      self.class.to_s.split("::")[0..-2].join(" ")
+    def name_for_display
+      if(name && not(name.empty?))
+        name
+      else
+        configuration_type.split("::")[0..-2].join(" ")
+      end
     end
 
     def build_configuration
-      configuration = self.class.configuration_class.new
+      configuration = configuration_class.new
 
-      self.class.fields_for_configuration.each do |field|
-        configuration.send("#{field}=",self.send(field))
+      configuration_class.template_fields.each do |field|
+        configuration.write_attribute(field,read_attribute(field))
       end
 
       configuration.template_name = name
@@ -31,17 +35,8 @@ module ActiveWorker
       configuration
     end
 
-    def self.field_for_configuration(name, *args)
-      field name, *args
-      fields_for_configuration << name
-    end
-
-    def self.fields_for_configuration
-      @fields ||= []
-    end
-
-    def self.configuration_class
-      "#{self.parent}::Configuration".constantize
+    def configuration_class
+      configuration_type.constantize
     end
   end
 end

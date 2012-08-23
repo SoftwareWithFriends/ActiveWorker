@@ -43,6 +43,10 @@ module ActiveWorker
         @renderable_configurations_hash ||= ActiveWorker::Configuration.get_renderable_hash_by_root_object(self)
       end
 
+      def all_configuration_hashes
+        @renderable_configurations_hash ||= ActiveWorker::Configuration.get_as_hash_by_root_object(self)
+      end
+
       def set_flags
         immediate_child_configurations.each do |config|
           config.update_attributes(:flags => flags)

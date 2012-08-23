@@ -79,5 +79,18 @@ module ActiveWorker
       true
     end
 
+    def self.config_field(name,*args)
+      field name, *args
+    end
+
+    def self.template_field(name,*args)
+      field name, *args
+      template_fields << name
+    end
+
+    def self.template_fields
+      @template_fields ||= []
+    end
+
   end
 end

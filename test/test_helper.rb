@@ -38,7 +38,7 @@ module ActiveWorker
 
 
   class TopConfig < Configuration
-    field :top_field
+    config_field :top_field
 
     def child_configs
       ChildConfig.mine(self).all
@@ -46,20 +46,20 @@ module ActiveWorker
   end
 
   class ChildConfig < Configuration
-    field :child_field
-
+    config_field :child_field
   end
 
   class TemplatableTopConfig < Configuration
     include Templatable
-    field :templatable_top_field
-
-end
+    template_field :top_field
+    config_field :other_top_field
+  end
 
   class TemplatableChildConfig < Configuration
     include Templatable
-     field :templatable_child_field
-   end
+    template_field :child_field
+    config_field :other_child_field
+  end
 
 end
 

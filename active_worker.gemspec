@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = "active_worker"
-  s.version = "0.24.0"
+  s.version = "0.29.0"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["perf"]
-  s.date = "2012-07-31"
+  s.date = "2012-08-23"
   s.description = "Uses a Configuration/Controller pattern to allow easy implementation and organziation of multi-tier distributed workloads."
   s.email = "perf@skarven.net"
   s.extra_rdoc_files = [
@@ -45,6 +45,7 @@ Gem::Specification.new do |s|
     "lib/active_worker/template.rb",
     "lib/active_worker/termination_event.rb",
     "test/acts_as_root_object_test.rb",
+    "test/integration_test.rb",
     "test/mongoid.yml",
     "test/test_configuration.rb",
     "test/test_controller.rb",

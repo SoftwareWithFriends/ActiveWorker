@@ -20,7 +20,7 @@ module ActiveWorker
 
       assert_equal TopConfig, parent_config.class
 
-      child_config = ChildConfig.where(parent_configuration_id: parent_config.id).first
+      child_config = ChildConfig.where(parent_configuration_id: parent_config.to_param).first
       assert_equal ChildConfig, child_config.class
 
     end
@@ -62,12 +62,12 @@ module ActiveWorker
 
       top_config = Configuration.get_as_hash_by_root_object(root).first
 
-      assert_equal config.id, top_config["_id"]
-      assert_equal config2.id, top_config["configurations"][0]["_id"]
-      assert_equal config3.id, top_config["configurations"][1]["_id"]
+      assert_equal config.to_param, top_config["_id"]
+      assert_equal config2.to_param, top_config["configurations"][0]["_id"]
+      assert_equal config3.to_param, top_config["configurations"][1]["_id"]
 
-      assert_equal config4.id, top_config["configurations"][1]["configurations"][0]["_id"]
-      assert_equal config5.id, top_config["configurations"][1]["configurations"][1]["_id"]
+      assert_equal config4.to_param, top_config["configurations"][1]["configurations"][0]["_id"]
+      assert_equal config5.to_param, top_config["configurations"][1]["configurations"][1]["_id"]
     end
 
     test "can get renderable configuration hierarchy" do
@@ -82,13 +82,13 @@ module ActiveWorker
       config8 = ChildConfig.create parent_configuration: config6, renderable: true
 
       top_config = Configuration.get_renderable_hash_by_root_object(root).first
-      assert_equal config.id, top_config["_id"]
+      assert_equal config.to_param, top_config["_id"]
       assert_equal 1, top_config["configurations"].size
-      assert_equal config2.id, top_config["configurations"][0]["_id"]
+      assert_equal config2.to_param, top_config["configurations"][0]["_id"]
 
-      assert_equal config6.id, top_config["configurations"][0]["configurations"][0]["_id"]
+      assert_equal config6.to_param, top_config["configurations"][0]["configurations"][0]["_id"]
       assert_equal 1, top_config["configurations"][0]["configurations"].size
-      assert_equal config8.id, top_config["configurations"][0]["configurations"][0]["configurations"][0]["_id"]
+      assert_equal config8.to_param, top_config["configurations"][0]["configurations"][0]["configurations"][0]["_id"]
     end
 
     test "can get renderable hash for given configuration" do
@@ -98,12 +98,11 @@ module ActiveWorker
 
       top_config = Configuration.renderable_hash_for_configuration(config.id)
 
-      assert_equal config.id, top_config["_id"]
+      assert_equal config.to_param, top_config["_id"]
       assert_equal 1, top_config["configurations"].size
-      assert_equal config2.id, top_config["configurations"][0]["_id"]
+      assert_equal config2.to_param, top_config["configurations"][0]["_id"]
       assert_equal "ActiveWorker::TopConfig", top_config["_type"]
     end
-
 
     test "Base Configurations can be hashable with type" do
       config = Configuration.create renderable: true
@@ -112,9 +111,9 @@ module ActiveWorker
 
       top_config = Configuration.renderable_hash_for_configuration(config.id)
 
-      assert_equal config.id, top_config["_id"]
+      assert_equal config.to_param.to_s, top_config["_id"]
       assert_equal 1, top_config["configurations"].size
-      assert_equal config2.id, top_config["configurations"][0]["_id"]
+      assert_equal config2.to_param.to_s, top_config["configurations"][0]["_id"]
 
       assert_equal "ActiveWorkerConfiguration", top_config["_type"]
       assert_equal "ActiveWorkerConfiguration", top_config["configurations"][0]["_type"]
@@ -138,8 +137,8 @@ module ActiveWorker
       root = Rootable.create
       config = SoonToNotExist::TopConfig.create root_object: root
       config2 = SoonToNotExist::ChildConfig.create parent_configuration: config
-      id1 = config.id
-      id2 = config2.id
+      id1 = config.to_param
+      id2 = config2.to_param
 
       ActiveWorker::ConfigurationTest::SoonToNotExist.send(:remove_const, :TopConfig)
       ActiveWorker::ConfigurationTest::SoonToNotExist.send(:remove_const, :ChildConfig)
@@ -161,16 +160,16 @@ module ActiveWorker
       configuration = Configuration.create
 
       configuration.started
-      assert_equal 1, StartedEvent.where(configuration_id: configuration.id).size
-      assert_match /#{configuration.event_name}/,StartedEvent.where(configuration_id: configuration.id).first.message
+      assert_equal 1, StartedEvent.where(configuration_id: configuration.to_param).size
+      assert_match /#{configuration.event_name}/,StartedEvent.where(configuration_id: configuration.to_param).first.message
     end
 
     test "can create finished event" do
       configuration = Configuration.create
 
       configuration.finished
-      assert_equal 1, FinishedEvent.where(configuration_id: configuration.id).size
-      assert_match /#{configuration.event_name}/,FinishedEvent.where(configuration_id: configuration.id).first.message
+      assert_equal 1, FinishedEvent.where(configuration_id: configuration.to_param).size
+      assert_match /#{configuration.event_name}/,FinishedEvent.where(configuration_id: configuration.to_param).first.message
     end
 
     test "can be notified" do
@@ -178,6 +177,19 @@ module ActiveWorker
       assert_equal false, configuration.notified?
       configuration.notify
       assert configuration.notified?
+    end
+
+    test "can treat as hash" do
+      config = Configuration.create value: "value"
+
+      assert_equal "value", config[:value]
+
+      config[:value]=  "value2"
+
+      assert_equal "value2", config[:value]
+
+      assert_nil config[:bad_method]
+
     end
 
 
