@@ -2,7 +2,7 @@ module ActiveWorker
   module JobQueue
     class JobExecuter
 
-      Thread.abort_on_exception = true
+      Thread.abort_on_exception = false
 
       @queue = :execute
 
