@@ -70,6 +70,19 @@ module ActiveWorker
       assert_equal config5.to_param, top_config["configurations"][1]["configurations"][1]["_id"]
     end
 
+    test "can get configurations as flat array" do
+      root = Rootable.create
+      config = TopConfig.create root_object: root
+      config2 = ChildConfig.create parent_configuration: config
+      config3 = ChildConfig.create parent_configuration: config
+      config4 = ChildConfig.create parent_configuration: config3
+      config5 = ChildConfig.create parent_configuration: config3
+
+      configs = Configuration.get_as_flat_hash_by_root_object(root)
+
+      assert_equal 5, configs.size
+    end
+
     test "can get renderable configuration hierarchy" do
       root = Rootable.create
       config = TopConfig.create root_object: root, renderable: true

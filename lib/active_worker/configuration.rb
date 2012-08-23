@@ -70,7 +70,7 @@ module ActiveWorker
     end
 
     def expandable_fields
-      attributes.select{|k,v| self.class.config_fields.include? k.to_sym}
+      attributes.select{ |k,v| self.class.config_fields.include? k.to_sym }
     end
 
     def self.controller_class

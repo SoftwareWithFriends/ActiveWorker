@@ -2,6 +2,16 @@ module ActiveWorker
   module Behavior
     module Hashable
 
+      def get_as_flat_hash_by_root_object(root_object)
+        configs = []
+        col = get_mongoid_collection
+        col.find("root_object_id" => root_object.id).each do |config|
+          canonicalize(config, col)
+          configs << config
+        end
+        configs
+      end
+
       def get_as_hash_by_root_object(root_object)
         configs = []
         col = get_mongoid_collection
