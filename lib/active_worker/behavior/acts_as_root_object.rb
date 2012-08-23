@@ -44,7 +44,7 @@ module ActiveWorker
       end
 
       def all_configuration_hashes
-        @renderable_configurations_hash ||= ActiveWorker::Configuration.get_as_hash_by_root_object(self)
+        @renderable_configurations_hash ||= ActiveWorker::Configuration.get_as_flat_hash_by_root_object(self)
       end
 
       def set_flags
