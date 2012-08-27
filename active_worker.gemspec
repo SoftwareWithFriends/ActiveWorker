@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = "active_worker"
-  s.version = "0.33.0"
+  s.version = "0.34.0"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["perf"]
-  s.date = "2012-08-23"
+  s.date = "2012-08-27"
   s.description = "Uses a Configuration/Controller pattern to allow easy implementation and organziation of multi-tier distributed workloads."
   s.email = "perf@skarven.net"
   s.extra_rdoc_files = [
@@ -33,6 +33,7 @@ Gem::Specification.new do |s|
     "lib/active_worker/configuration.rb",
     "lib/active_worker/controller.rb",
     "lib/active_worker/event.rb",
+    "lib/active_worker/expandable.rb",
     "lib/active_worker/failure_event.rb",
     "lib/active_worker/finished_event.rb",
     "lib/active_worker/host_information.rb",
@@ -50,6 +51,7 @@ Gem::Specification.new do |s|
     "test/test_configuration.rb",
     "test/test_controller.rb",
     "test/test_event.rb",
+    "test/test_expandable.rb",
     "test/test_failure_event.rb",
     "test/test_finished_event.rb",
     "test/test_helper.rb",
