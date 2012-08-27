@@ -4,6 +4,8 @@ module ActiveWorker
     include Behavior::HasRootObject
     extend  Behavior::Hashable
 
+    POLLING_INTERVAL = 0.1
+
     has_many :events, :class_name => "ActiveWorker::Event"
 
     has_many   :configurations,
@@ -23,16 +25,35 @@ module ActiveWorker
     before_save :set_flags
 
     scope :mine, ->(parent_config) {where(parent_configuration_id: parent_config.id )}
+    attr_reader :thread
 
     def launch
-      self.class.controller_class.run_remotely.launch_thread(self.id)
+      configurations = []
+      configurations += self.class.before_launch_methods.map { |method| send(method) }.flatten
+      configurations += expand_for_workers.map(&:enqueue_job)
+      configurations
+    end
+
+    def expand_for_workers
+      [self]
+    end
+
+    def expand_for_threads
+      [self]
+    end
+
+    def enqueue_job
+      @thread = self.class.controller_class.run_remotely.launch_thread(self.id)
+      self
     end
 
     def supported_child_configurations
       []
     end
 
-
+    def defined_fields
+      attributes.select{ |k,v| self.class.config_fields.include? k.to_sym }
+    end
 
     def event_name
       parts = self.class.name.split("::")
@@ -46,6 +67,14 @@ module ActiveWorker
 
     def completed?
       FinishedEvent.where(configuration_id: id).count > 0
+    end
+
+    def wait_until_completed
+      if thread
+        thread.join
+      else
+        sleep(POLLING_INTERVAL) until completed?
+      end
     end
 
     def started
@@ -67,10 +96,6 @@ module ActiveWorker
     def set_flags
       self.flags = parent_configuration.flags if parent_configuration
       true
-    end
-
-    def expandable_fields
-      attributes.select{ |k,v| self.class.config_fields.include? k.to_sym }
     end
 
     def self.controller_class
@@ -101,6 +126,14 @@ module ActiveWorker
 
     def self.config_fields
       @config_fields ||= []
+    end
+
+    def self.before_launch(method)
+      before_launch_methods << method
+    end
+
+    def self.before_launch_methods
+      @before_launch_methods ||= []
     end
 
   end

@@ -6,10 +6,15 @@ module ActiveWorker
 
     def self.launch_thread(configuration_id, *args)
       config = Configuration.find(configuration_id)
-      worker = new(config, *args)
-      worker.started
-      worker.execute
-      worker.finished
+      threads = config.expand_for_threads.map do |expanded_config|
+        Thread.new do
+          worker = new(expanded_config, *args)
+          worker.started
+          worker.execute
+          worker.finished
+        end
+      end
+      threads.each(&:join)
     end
 
     def self.handle_error(error, method, params)
@@ -43,7 +48,7 @@ module ActiveWorker
     end
 
     def finished
-     configuration.finished
+      configuration.finished
     end
 
     private

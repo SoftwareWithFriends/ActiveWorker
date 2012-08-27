@@ -205,7 +205,7 @@ module ActiveWorker
 
     end
 
-    test "can retrieve hash of expandable fields" do
+    test "can retrieve hash of config fields" do
       class TestConfig < Configuration
         config_field :config_field
         template_field :template_field
@@ -216,11 +216,31 @@ module ActiveWorker
                                  template_field: "template_field",
                                  other_field: "other_field"
 
-      expected_expandable_fields = {"config_field" => "config_field",
+      expected_config_fields = {"config_field" => "config_field",
                                     "template_field" => "template_field"}
-      assert_equal expected_expandable_fields, config.expandable_fields
+      assert_equal expected_config_fields, config.defined_fields
     end
 
+    test "launch calls before launch methods" do
+      config = BeforeLaunchConfig.create
+      config.expects(:before_launch_method)
+      config.stubs(:enqueue_job)
+      config.launch
+    end
+
+    test "launch returns configurations" do
+      config = BeforeLaunchConfig.create
+
+      before_launch_configs = ["before launch 1", "before launch 2"]
+
+      config.stubs(:before_launch_method).returns(before_launch_configs)
+      config.stubs(:enqueue_job).returns("config")
+
+      configs = config.launch
+      assert_equal 3, configs.size
+
+      assert_equal before_launch_configs + ["config"], configs
+    end
 
   end
 end

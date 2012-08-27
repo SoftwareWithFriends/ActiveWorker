@@ -18,7 +18,16 @@ module ActiveWorker
       Controller.launch_thread(configuration.id)
 
       assert_equal 1, StartedEvent.where(configuration_id: configuration.id).size
+    end
 
+    test "can run multiple threads" do
+      class ThreadedConfig < Configuration
+        include Expandable
+      end
+      configuration = ThreadedConfig.create number_of_threads: 2
+
+      Controller.any_instance.expects(:execute).twice
+      Controller.launch_thread(configuration.id)
     end
 
     test "creates finished event during launch_thread" do
@@ -38,7 +47,6 @@ module ActiveWorker
       controller = Controller.new(configuration)
       controller.started
       assert_equal 1, StartedEvent.where(configuration_id: configuration.id).size
-
     end
   end
 end

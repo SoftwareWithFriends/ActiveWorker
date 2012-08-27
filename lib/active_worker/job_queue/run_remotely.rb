@@ -25,9 +25,10 @@ module ActiveWorker
 
         def method_missing(method,*params)
           args = construct_args(method,params)
+          thread = nil
           case RunRemotely.worker_mode
             when THREADED
-              Thread.new do
+              thread = Thread.new do
                 ActiveWorker::JobQueue::JobExecuter.execute_task_from_args(args)
               end
             when STALKER
@@ -35,6 +36,7 @@ module ActiveWorker
             when RESQUE
               Resque.enqueue(JobExecuter,args)
           end
+          thread
         end
 
         def queue
