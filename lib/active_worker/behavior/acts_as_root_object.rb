@@ -4,7 +4,7 @@ module ActiveWorker
 
       module ClassExtensions
         def acts_as_root_for(relation,class_name)
-          has_many   relation, :dependent => :destroy,
+          has_many   relation, :dependent => :delete,
                      :class_name => class_name,
                      :inverse_of => :root_object,
                      :autosave   => true
