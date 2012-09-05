@@ -221,25 +221,24 @@ module ActiveWorker
       assert_equal expected_config_fields, config.defined_fields
     end
 
-    test "launch calls before launch methods" do
-      config = BeforeLaunchConfig.create
-      config.expects(:before_launch_method)
+    test "launch calls after launch methods" do
+      config = AfterLaunchConfig.create
+      config.expects(:after_launch_method).with([config])
       config.stubs(:enqueue_job)
       config.launch
     end
 
     test "launch returns configurations" do
-      config = BeforeLaunchConfig.create
+      config = AfterLaunchConfig.create
 
-      before_launch_configs = ["before launch 1", "before launch 2"]
+      after_launch_configs = ["after launch 1", "after launch 2"]
 
-      config.stubs(:before_launch_method).returns(before_launch_configs)
-      config.stubs(:enqueue_job).returns("config")
+      config.stubs(:after_launch_method).returns(after_launch_configs)
 
       configs = config.launch
       assert_equal 3, configs.size
 
-      assert_equal before_launch_configs + ["config"], configs
+      assert_equal  [config] + after_launch_configs, configs
     end
 
   end

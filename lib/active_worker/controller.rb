@@ -6,15 +6,26 @@ module ActiveWorker
 
     def self.launch_thread(configuration_id, *args)
       config = Configuration.find(configuration_id)
-      threads = config.expand_for_threads.map do |expanded_config|
-        Thread.new do
-          worker = new(expanded_config, *args)
-          worker.started
-          worker.execute
-          worker.finished
-        end
-      end
+      configurations = config.expand_for_threads
+
+      threads = execute_threads configurations
       threads.each(&:join)
+      worker_cleanup_methods.each { |method| send(method, configurations) }
+    end
+
+    def self.execute_threads(configurations)
+      configurations.map do |expanded_config|
+        execute_thread expanded_config
+      end
+    end
+
+    def self.execute_thread(configuration)
+      Thread.new do
+        worker = new(configuration)
+        worker.started
+        worker.execute
+        worker.finished
+      end
     end
 
     def self.handle_error(error, method, params)
@@ -29,6 +40,13 @@ module ActiveWorker
       TerminationEvent.from_termination(configuration)
     end
 
+    def self.worker_cleanup(method)
+      worker_cleanup_methods << method
+    end
+
+    def self.worker_cleanup_methods
+      @worker_cleanup_methods ||= []
+    end
 
     def initialize(configuration)
       @configuration = configuration

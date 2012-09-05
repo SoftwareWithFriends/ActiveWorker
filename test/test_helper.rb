@@ -61,8 +61,8 @@ module ActiveWorker
     config_field :other_child_field
   end
 
-  class BeforeLaunchConfig < ActiveWorker::Configuration
-    before_launch :before_launch_method
+  class AfterLaunchConfig < ActiveWorker::Configuration
+    after_launch :after_launch_method
   end
 
 end

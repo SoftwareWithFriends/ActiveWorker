@@ -2,16 +2,16 @@ module ActiveWorker
   class Configuration
     include Mongoid::Document
     include Behavior::HasRootObject
-    extend  Behavior::Hashable
+    extend Behavior::Hashable
 
     POLLING_INTERVAL = 0.1
 
     has_many :events, :class_name => "ActiveWorker::Event"
 
-    has_many   :configurations,
-               :as => :parent_configuration,
-               :class_name => 'ActiveWorker::Configuration',
-               :autosave => true
+    has_many :configurations,
+             :as => :parent_configuration,
+             :class_name => 'ActiveWorker::Configuration',
+             :autosave => true
 
     belongs_to :parent_configuration,
                :polymorphic => true
@@ -24,14 +24,18 @@ module ActiveWorker
 
     before_save :set_flags
 
-    scope :mine, ->(parent_config) {where(parent_configuration_id: parent_config.id )}
+    scope :mine, ->(parent_config) { where(parent_configuration_id: parent_config.id) }
     attr_reader :thread
 
     def launch
-      configurations = []
-      configurations += self.class.before_launch_methods.map { |method| send(method) }.flatten
-      configurations += expand_for_workers.map(&:enqueue_job)
+      configurations = expand_for_workers
+      configurations.each(&:enqueue_job)
+      configurations += collect_after_launch_configurations(configurations)
       configurations
+    end
+
+    def collect_after_launch_configurations(configurations)
+      self.class.after_launch_methods.map { |method| send(method, configurations) }.flatten
     end
 
     def expand_for_workers
@@ -52,7 +56,7 @@ module ActiveWorker
     end
 
     def defined_fields
-      attributes.select{ |k,v| self.class.config_fields.include? k.to_sym }
+      attributes.select { |k, v| self.class.config_fields.include? k.to_sym }
     end
 
     def event_name
@@ -62,7 +66,7 @@ module ActiveWorker
     end
 
     def renderable_configurations
-      configurations.select {|c| c.renderable}
+      configurations.select { |c| c.renderable }
     end
 
     def completed?
@@ -110,12 +114,12 @@ module ActiveWorker
       name.split("::").join("_")
     end
 
-    def self.template_field(name,*args)
+    def self.template_field(name, *args)
       config_field(name, *args)
       template_fields << name
     end
 
-    def self.config_field(name,*args)
+    def self.config_field(name, *args)
       field name, *args
       config_fields << name
     end
@@ -128,12 +132,12 @@ module ActiveWorker
       @config_fields ||= []
     end
 
-    def self.before_launch(method)
-      before_launch_methods << method
+    def self.after_launch(method)
+      after_launch_methods << method
     end
 
-    def self.before_launch_methods
-      @before_launch_methods ||= []
+    def self.after_launch_methods
+      @after_launch_methods ||= []
     end
 
   end

@@ -48,5 +48,19 @@ module ActiveWorker
       controller.started
       assert_equal 1, StartedEvent.where(configuration_id: configuration.id).size
     end
+
+    test "call worker cleanup methods during launch thread" do
+      class TestController < Controller
+        worker_cleanup :test_worker_cleanup_method
+
+        def execute
+
+        end
+      end
+      configuration = Configuration.create
+
+      TestController.expects(:test_worker_cleanup_method)
+      TestController.launch_thread(configuration.id)
+    end
   end
 end

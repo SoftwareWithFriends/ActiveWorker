@@ -6,33 +6,55 @@ module ActiveWorker
       base.template_field :number_of_workers, type: Integer, default: 1
     end
 
-    def expand_for_workers
-      expand_configuration(workers_to_expand)
-    end
-
     def expand_for_threads
-      expand_configuration(threads_to_expand)
+      maps = expansion_maps_for_threads
+      expand_from_maps(maps)
     end
 
-    def expand_configuration(additional_configurations)
-      expanded_configs = [self]
-      additional_configurations.times do
-        expanded_configs << created_expanded_configuration
+    def expand_for_workers
+      maps = expansion_maps_for_workers
+      expand_from_maps(maps)
+    end
+
+    private
+
+    def expand_from_maps(maps)
+      first_config = true
+      maps.map do |map_hash|
+        if first_config
+          first_config = false
+          modify_for_expansion(map_hash)
+        else
+          create_for_expansion(map_hash)
+        end
       end
-      expanded_configs
     end
 
-    def created_expanded_configuration(options = {})
+    def create_for_expansion(options = {})
       self.class.create(defined_fields.merge(parent_configuration: parent_configuration,
                                              root_object_id: root_object_id).merge(options))
     end
 
-    def workers_to_expand
-      (number_of_workers - 1)
+    def modify_for_expansion(options = {})
+      self.update_attributes!(options)
+      self
     end
 
-    def threads_to_expand
-      (number_of_threads - 1)
+
+    def expansion_maps_for_workers
+      expansion_maps_for(number_of_workers)
+    end
+
+    def expansion_maps_for_threads
+      expansion_maps_for(number_of_threads)
+    end
+
+    def expansion_maps_for(number_of_configurations)
+      maps = []
+      number_of_configurations.times do
+        maps << {}
+      end
+      maps
     end
 
   end
