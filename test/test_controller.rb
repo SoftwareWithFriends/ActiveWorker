@@ -10,12 +10,12 @@ module ActiveWorker
       assert_equal 1, StartedEvent.where(configuration_id: configuration.id).size
     end
 
-    test "creates started event during launch_thread" do
+    test "creates started event during execute_worker" do
 
       configuration = Configuration.create
 
       Controller.any_instance.stubs(:execute)
-      Controller.launch_thread(configuration.id)
+      Controller.execute_worker(configuration.id)
 
       assert_equal 1, StartedEvent.where(configuration_id: configuration.id).size
     end
@@ -27,15 +27,15 @@ module ActiveWorker
       configuration = ThreadedConfig.create number_of_threads: 2
 
       Controller.any_instance.expects(:execute).twice
-      Controller.launch_thread(configuration.id)
+      Controller.execute_worker(configuration.id)
     end
 
-    test "creates finished event during launch_thread" do
+    test "creates finished event during execute_worker" do
 
       configuration = Configuration.create
 
       Controller.any_instance.stubs(:execute)
-      Controller.launch_thread(configuration.id)
+      Controller.execute_worker(configuration.id)
 
       assert_equal 1, FinishedEvent.where(configuration_id: configuration.id).size
 
@@ -60,7 +60,7 @@ module ActiveWorker
       configuration = Configuration.create
 
       TestController.expects(:test_worker_cleanup_method)
-      TestController.launch_thread(configuration.id)
+      TestController.execute_worker(configuration.id)
     end
   end
 end

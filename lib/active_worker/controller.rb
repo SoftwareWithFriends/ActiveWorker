@@ -4,7 +4,7 @@ module ActiveWorker
 
     attr_reader :configuration
 
-    def self.launch_thread(configuration_id)
+    def self.execute_worker(configuration_id)
       config = Configuration.find(configuration_id)
       configurations = config.expand_for_threads
 

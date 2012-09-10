@@ -45,7 +45,7 @@ module ActiveWorker
     end
 
     def enqueue_job
-      self.class.controller_class.run_remotely.launch_thread(self.id)
+      self.class.controller_class.run_remotely.execute_worker(self.id)
       self
     end
 
