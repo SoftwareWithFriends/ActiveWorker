@@ -3,7 +3,6 @@ module ActiveWorker
     include Mongoid::Document
     include Behavior::HasRootObject
     extend Behavior::Hashable
-
     POLLING_INTERVAL = 0.1
 
     has_many :events, :class_name => "ActiveWorker::Event"
@@ -25,7 +24,6 @@ module ActiveWorker
     before_save :set_flags
 
     scope :mine, ->(parent_config) { where(parent_configuration_id: parent_config.id) }
-    attr_reader :thread
 
     def launch
       configurations = expand_for_workers
@@ -47,7 +45,7 @@ module ActiveWorker
     end
 
     def enqueue_job
-      @thread = self.class.controller_class.run_remotely.launch_thread(self.id)
+      self.class.controller_class.run_remotely.launch_thread(self.id)
       self
     end
 
@@ -74,11 +72,7 @@ module ActiveWorker
     end
 
     def wait_until_completed
-      if thread
-        thread.join
-      else
-        sleep(POLLING_INTERVAL) until completed?
-      end
+      sleep(POLLING_INTERVAL) until completed?
     end
 
     def started
