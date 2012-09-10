@@ -17,7 +17,9 @@ group :test do
   gem 'activesupport'
 end
 
-gem 'mongoid', :git => 'https://github.com/mongoid/mongoid.git'
+gem 'mongoid', :git => 'git://github.com/SoftwareWithFriends/mongoid.git'
+#gem 'mongoid', :path => "/home/e3/dev/mongoid"
+
 gem 'bson_ext' #, '=1.4.0'
 gem 'stalker', :git => "git://github.com/SoftwareWithFriends/stalker.git"
 gem 'resque'
