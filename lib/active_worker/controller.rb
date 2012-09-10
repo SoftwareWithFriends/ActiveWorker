@@ -10,6 +10,7 @@ module ActiveWorker
 
       threads = execute_threads configurations
       threads.each(&:join)
+    ensure
       worker_cleanup_methods.each { |method| send(method, configurations) }
     end
 
