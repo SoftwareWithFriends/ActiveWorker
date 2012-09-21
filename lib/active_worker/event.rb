@@ -7,6 +7,7 @@ module ActiveWorker
 
     belongs_to :configuration, :class_name => "ActiveWorker::Configuration"
     alias_method :root_owner, :configuration
+    root_object_relation :events
 
     before_save :set_message, :set_process_information
 

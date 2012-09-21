@@ -16,6 +16,7 @@ module ActiveWorker
                :polymorphic => true
 
     alias_method :root_owner, :parent_configuration
+    root_object_relation :configurations
 
     field :polling_interval, :type => Integer, :default => 1
     field :renderable, :type => Boolean, :default => false
@@ -41,6 +42,10 @@ module ActiveWorker
     end
 
     def expand_for_threads
+      [self]
+    end
+
+    def configurations_for_events
       [self]
     end
 

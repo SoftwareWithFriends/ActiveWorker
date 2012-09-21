@@ -34,7 +34,8 @@ module ActiveWorker
 
     test "passses down root object when saved" do
       root = Rootable.create
-      config = TopConfig.new root_object: root
+      config = TopConfig.new
+      root.configurations << config
       config2 = ChildConfig.new parent_configuration: config
 
       config.save!
@@ -44,7 +45,8 @@ module ActiveWorker
 
     test "passes down flags when saved" do
       root = Rootable.create flags: {"analyze_performance" => true}
-      config = TopConfig.new root_object: root, flags: root.flags
+      config = TopConfig.new flags: root.flags
+      root.configurations << config
       config2 = ChildConfig.new parent_configuration: config
 
       config.save!
@@ -53,12 +55,14 @@ module ActiveWorker
     end
 
     test "can get configuration hierarchy" do
-      root = Rootable.create
-      config = TopConfig.create root_object: root
+      config = TopConfig.create
       config2 = ChildConfig.create parent_configuration: config
       config3 = ChildConfig.create parent_configuration: config
       config4 = ChildConfig.create parent_configuration: config3
       config5 = ChildConfig.create parent_configuration: config3
+
+      root = Rootable.create
+      root.configurations << config
 
       top_config = Configuration.get_as_hash_by_root_object(root).first
 
@@ -71,12 +75,14 @@ module ActiveWorker
     end
 
     test "can get configurations as flat array" do
-      root = Rootable.create
-      config = TopConfig.create root_object: root
+      config = TopConfig.create
       config2 = ChildConfig.create parent_configuration: config
       config3 = ChildConfig.create parent_configuration: config
       config4 = ChildConfig.create parent_configuration: config3
       config5 = ChildConfig.create parent_configuration: config3
+
+      root = Rootable.create
+      root.configurations << config
 
       configs = Configuration.get_as_flat_hash_by_root_object(root)
 
@@ -85,7 +91,8 @@ module ActiveWorker
 
     test "can get renderable configuration hierarchy" do
       root = Rootable.create
-      config = TopConfig.create root_object: root, renderable: true
+      config = TopConfig.create renderable: true
+      root.configurations << config
       config2 = ChildConfig.create parent_configuration: config, renderable: true
       config3 = ChildConfig.create parent_configuration: config, renderable: false
       config4 = ChildConfig.create parent_configuration: config3, renderable: true
@@ -148,7 +155,8 @@ module ActiveWorker
         end
       end
       root = Rootable.create
-      config = SoonToNotExist::TopConfig.create root_object: root
+      config = SoonToNotExist::TopConfig.create
+      root.configurations << config
       config2 = SoonToNotExist::ChildConfig.create parent_configuration: config
       id1 = config.to_param
       id2 = config2.to_param
@@ -217,7 +225,7 @@ module ActiveWorker
                                  other_field: "other_field"
 
       expected_config_fields = {"config_field" => "config_field",
-                                    "template_field" => "template_field"}
+                                "template_field" => "template_field"}
       assert_equal expected_config_fields, config.defined_fields
     end
 
@@ -238,8 +246,14 @@ module ActiveWorker
       configs = config.launch
       assert_equal 3, configs.size
 
-      assert_equal  [config] + after_launch_configs, configs
+      assert_equal [config] + after_launch_configs, configs
     end
 
+    test "cannot create configuration with root object directly" do
+      root = Rootable.create
+      assert_raise Mongoid::Errors::InvalidSetPolymorphicRelation do
+        TopConfig.create root_object: root
+      end
+    end
   end
 end

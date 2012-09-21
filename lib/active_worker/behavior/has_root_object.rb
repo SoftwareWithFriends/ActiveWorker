@@ -2,14 +2,34 @@ module ActiveWorker
   module Behavior
     module HasRootObject
 
+      module ClassExtensions
+        def root_object_relation(relation)
+          belongs_to :root_object, :polymorphic => true, inverse_of: relation
+        end
+      end
+
       def self.included(base)
+        base.extend(ClassExtensions)
         base.before_save :set_root_object
-        base.belongs_to :root_object, :polymorphic => true
-        base.index({:root_object_id => -1},{:background => true})
+        base.index({:root_object_id => -1}, {:background => true})
       end
 
       def root_owner
         nil
+      end
+
+      def notify_root_of_child_started
+        if root_object
+          root_object.child_started
+          root_object.save!
+        end
+      end
+
+      def notify_root_of_finished
+        if root_object
+          root_object.child_finished
+          root_object.save!
+        end
       end
 
       def get_root_object_id

@@ -65,6 +65,23 @@ module ActiveWorker
     after_launch :after_launch_method
   end
 
+  class ExpandableConfig < Configuration
+    include Expandable
+    field :foo
+    template_field :name
+    config_field :size
+  end
+
+  class MappedExpandableConfig < ExpandableConfig
+    def expansion_maps_for(number_of_configurations)
+      maps = []
+      number_of_configurations.times do |value|
+        maps << {size: value}
+      end
+      maps
+    end
+  end
+
 end
 
 

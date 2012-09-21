@@ -3,22 +3,7 @@ require_relative "test_helper"
 module ActiveWorker
   class ExpandableTest < ActiveSupport::TestCase
 
-    class ExpandableConfig < Configuration
-      include Expandable
-      field :foo
-      template_field :name
-      config_field :size
-    end
 
-    class MappedExpandableConfig < ExpandableConfig
-      def expansion_maps_for(number_of_configurations)
-        maps = []
-        number_of_configurations.times do |value|
-          maps << {size: value}
-        end
-        maps
-      end
-    end
 
     test "can expand configuration for workers" do
       root_object = Rootable.create
@@ -82,6 +67,10 @@ module ActiveWorker
 
       assert_equal expected_number_of_configs, expanded_configs.size
       assert_equal [0,1,2,3,4], expanded_configs.map(&:size)
+      assert_nil expanded_configs.first.thread_root_configuration_id
+      expanded_configs[1..-1].each do |threaded_config|
+        assert_equal expanded_configs.first, threaded_config.thread_root_configuration
+      end
     end
 
     test "can expand workers using maps" do
