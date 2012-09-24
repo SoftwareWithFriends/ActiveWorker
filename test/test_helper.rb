@@ -67,6 +67,7 @@ module ActiveWorker
 
   class ExpandableConfig < Configuration
     include Expandable
+    include Templatable
     field :foo
     template_field :name
     config_field :size

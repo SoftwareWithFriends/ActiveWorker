@@ -46,7 +46,8 @@ module ActiveWorker
     def create_for_expansion(options = {})
       self.class.create(defined_fields.merge(parent_configuration: parent_configuration,
                                              root_object_id: root_object_id,
-                                             root_object_type: root_object_type).merge(options))
+                                             root_object_type: root_object_type,
+                                             renderable: false).merge(options))
     end
 
     def modify_for_expansion(options = {})

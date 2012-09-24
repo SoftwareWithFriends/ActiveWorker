@@ -105,6 +105,7 @@ module ActiveWorker
       expanded_configs.each do |expanded_config|
         next if expanded_config == config
         assert_nil expanded_config.foo
+        assert_equal false, expanded_config.renderable
       end
     end
 

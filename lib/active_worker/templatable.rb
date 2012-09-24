@@ -7,15 +7,12 @@ module ActiveWorker
       end
     end
 
-
     def self.included(base)
       base.field :renderable, :type => Boolean, :default => true
       base.field :template_name
 
       base.extend(ClassMethods)
     end
-
-
 
     def find_template
       child_template_ids = configurations.map(&:find_template).map(&:id)
