@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = "active_worker"
-  s.version = "0.40.0"
+  s.version = "0.41.0"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["perf"]
-  s.date = "2012-09-10"
+  s.date = "2012-09-26"
   s.description = "Uses a Configuration/Controller pattern to allow easy implementation and organziation of multi-tier distributed workloads."
   s.email = "perf@skarven.net"
   s.extra_rdoc_files = [
@@ -59,7 +59,8 @@ Gem::Specification.new do |s|
     "test/test_queue_manager.rb",
     "test/test_run_remotely.rb",
     "test/test_started_event.rb",
-    "test/test_template.rb"
+    "test/test_template.rb",
+    "test/test_termination_event.rb"
   ]
   s.homepage = "http://github.com/ryanmcgarvey/active_worker"
   s.licenses = ["MIT"]
