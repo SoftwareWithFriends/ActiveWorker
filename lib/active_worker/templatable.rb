@@ -34,7 +34,13 @@ module ActiveWorker
       template
     end
 
+    def template_name_or(input_string)
+      if template_name && (not template_name.empty?)
+        template_name
+      else
+        input_string
+      end
+    end
+
   end
-
-
 end
