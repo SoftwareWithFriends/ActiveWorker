@@ -22,7 +22,7 @@ module ActiveWorker
 
       def self.included(base)
         base.extend(ClassExtensions)
-        base.field :mode
+        base.template_field :mode
         base.before_save :set_mode_defined_fields
       end
 

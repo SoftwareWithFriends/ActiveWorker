@@ -1,8 +1,7 @@
 require_relative "test_helper"
 
 module ActiveWorker
-  class Modeable
-    include Mongoid::Document
+  class Modeable < Configuration
     include ActiveWorker::Behavior::HasModes
 
     field :custom_field
@@ -11,6 +10,10 @@ module ActiveWorker
     add_mode :second, custom_field: "mode2"
   end
 
+  class ModeableWithNoModes < Configuration
+    include ActiveWorker::Behavior::HasModes
+    field :custom_field
+  end
 
   class HasModesTest < ActiveSupport::TestCase
     test "can specify modes" do
@@ -40,6 +43,11 @@ module ActiveWorker
     test "allows no mode to be set" do
       mode_config = Modeable.create custom_field: "set"
       assert_equal "set", mode_config.custom_field
+    end
+
+    test "allows no modes to be added" do
+      assert_equal [], ModeableWithNoModes.modes
+
     end
 
   end
