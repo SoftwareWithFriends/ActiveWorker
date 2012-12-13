@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = "active_worker"
-  s.version = "0.43.0"
+  s.version = "0.44.0"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["perf"]
-  s.date = "2012-10-12"
+  s.date = "2012-12-13"
   s.description = "Uses a Configuration/Controller pattern to allow easy implementation and organziation of multi-tier distributed workloads."
   s.email = "perf@skarven.net"
   s.extra_rdoc_files = [
@@ -28,6 +28,7 @@ Gem::Specification.new do |s|
     "active_worker.gemspec",
     "lib/active_worker.rb",
     "lib/active_worker/behavior/acts_as_root_object.rb",
+    "lib/active_worker/behavior/has_modes.rb",
     "lib/active_worker/behavior/has_root_object.rb",
     "lib/active_worker/behavior/hashable.rb",
     "lib/active_worker/configuration.rb",
@@ -40,12 +41,14 @@ Gem::Specification.new do |s|
     "lib/active_worker/job_queue/job_executer.rb",
     "lib/active_worker/job_queue/queue_manager.rb",
     "lib/active_worker/job_queue/run_remotely.rb",
+    "lib/active_worker/modes_map.rb",
     "lib/active_worker/notification_event.rb",
     "lib/active_worker/started_event.rb",
     "lib/active_worker/templatable.rb",
     "lib/active_worker/template.rb",
     "lib/active_worker/termination_event.rb",
     "test/acts_as_root_object_test.rb",
+    "test/has_modes_test.rb",
     "test/integration_test.rb",
     "test/mongoid.yml",
     "test/test_configuration.rb",
@@ -66,7 +69,7 @@ Gem::Specification.new do |s|
   s.homepage = "http://github.com/ryanmcgarvey/active_worker"
   s.licenses = ["MIT"]
   s.require_paths = ["lib"]
-  s.rubygems_version = "1.8.24"
+  s.rubygems_version = "1.8.10"
   s.summary = "Framework for making class distributable on a queueing system."
 
   if s.respond_to? :specification_version then
