@@ -8,10 +8,8 @@ rescue Bundler::BundlerError => e
   exit e.status_code
 end
 
-
 require 'active_support/test_case'
 require 'test/unit'
-
 
 $LOAD_PATH.unshift(File.dirname(__FILE__))
 $LOAD_PATH.unshift(File.join(File.dirname(__FILE__), '..', 'lib'))

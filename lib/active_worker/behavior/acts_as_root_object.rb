@@ -27,6 +27,10 @@ module ActiveWorker
           return finished_at - created_at
         end
 
+        if completed? && !finished_at
+          return 0
+        end
+
         Time.now - created_at
       end
 

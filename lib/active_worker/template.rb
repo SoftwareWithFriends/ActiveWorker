@@ -3,7 +3,6 @@ module ActiveWorker
     include Mongoid::Document
 
     has_and_belongs_to_many :child_templates,  :class_name => "ActiveWorker::Template", :inverse_of => :parent_templates
-    has_and_belongs_to_many :parent_templates, :class_name => "ActiveWorker::Template", :inverse_of => :child_templates
 
     field :name
     field :configuration_type

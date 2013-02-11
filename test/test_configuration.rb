@@ -249,11 +249,17 @@ module ActiveWorker
       assert_equal [config] + after_launch_configs, configs
     end
 
-    test "cannot create configuration with root object directly" do
+    test "can create configuration with root object directly" do
       root = Rootable.create
-      assert_raise Mongoid::Errors::InvalidSetPolymorphicRelation do
-        TopConfig.create root_object: root
+      configuration = nil
+      assert_nothing_raised Mongoid::Errors::InvalidSetPolymorphicRelation do
+        configuration = TopConfig.create root_object: root
       end
+
+      assert_equal root, configuration.root_object
+      assert_equal 1, root.configurations.size
+      assert_equal configuration, root.configurations.first
+
     end
 
     test "can create create config with root object directly" do

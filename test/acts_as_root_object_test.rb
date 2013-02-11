@@ -105,11 +105,16 @@ module ActiveWorker
 
     test "sets finished_at correctly" do
       root = Rootable.create
-      topconfig1 = root.configurations.create({}, TemplatableTopConfig)
+      topconfig1 = TemplatableTopConfig.create
+      root.configurations << topconfig1
 
+      root.reload
       assert_nil root.finished_at
 
       topconfig1.finished
+      root.reload
+
+      assert root.completed?
       assert root.finished_at.to_i > 0
     end
 

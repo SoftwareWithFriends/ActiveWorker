@@ -20,26 +20,25 @@ module ActiveWorker
     end
 
     test "can have duplicate child template" do
-      config = TemplatableTopConfig.create template_name: "top", top_field: "top_field"
-      child_config1 = TemplatableChildConfig.create child_field: "same", parent_configuration: config
-      child_config2 = TemplatableChildConfig.create child_field: "same", parent_configuration: config
+      top_config = TemplatableTopConfig.create template_name: "top", top_field: "top_field"
+      child_config1 = TemplatableChildConfig.create child_field: "same", parent_configuration: top_config
+      child_config2 = TemplatableChildConfig.create child_field: "same", parent_configuration: top_config
 
-      assert_equal 2, config.configurations.count
+      assert_equal 2, top_config.configurations.count
 
-      template = config.find_template
+      template = top_config.find_template
 
       assert_equal "top_field", template.top_field
 
-      assert_equal 1, template.child_templates.count
+      assert_equal 2, template.child_template_ids.size
+      assert_equal 2, template.child_template_ids.count
 
-      template.child_template_ids.each do |id|
-        puts id
-      end
+      assert_equal 1, template.child_templates.size
 
-      assert_equal 1, template.child_template_ids.count
+
+      # Makes new Configurations, does not put them in the database
       new_config = template.build_configuration
-
-      assert_equal 2, new_config.configurations.count
+      assert_equal 2, new_config.configurations.size
     end
 
   end

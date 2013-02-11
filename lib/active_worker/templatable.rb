@@ -29,13 +29,13 @@ module ActiveWorker
       end
 
       template = Template.find_or_create_by(attributes_for_template)
-      template.name = template_name if template_name && (not template_name.empty?)
+      template.name = template_name if template_name && (! template_name.empty?)
       template.save!
       template
     end
 
     def template_name_or(input_string)
-      if template_name && (not template_name.empty?)
+      if template_name && (! template_name.empty?)
         template_name
       else
         input_string
