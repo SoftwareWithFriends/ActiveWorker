@@ -7,16 +7,11 @@ rescue Bundler::BundlerError => e
   $stderr.puts "Run `bundle install` to install missing gems"
   exit e.status_code
 end
+
+
 require 'active_support/test_case'
 require 'test/unit'
 
-require 'minitest/reporters'
-MiniTest::Unit.runner = MiniTest::SuiteRunner.new
-if ENV["RM_INFO"] || ENV["TEAMCITY_VERSION"]
-  MiniTest::Unit.runner.reporters << MiniTest::Reporters::RubyMineReporter.new
-else
-  MiniTest::Unit.runner.reporters << MiniTest::Reporters::ProgressReporter.new
-end
 
 $LOAD_PATH.unshift(File.dirname(__FILE__))
 $LOAD_PATH.unshift(File.join(File.dirname(__FILE__), '..', 'lib'))

@@ -11,7 +11,7 @@ module ActiveWorker
     scope :with_names, ->(configuration_class) { where(:name.exists => true, :configuration_type => configuration_class.name)}
 
     def name_for_display
-      if(name && not(name.empty?))
+      if(name && !(name.empty?))
         name
       else
         configuration_type.split("::")[0..-2].join(" ")

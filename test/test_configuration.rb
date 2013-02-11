@@ -255,5 +255,21 @@ module ActiveWorker
         TopConfig.create root_object: root
       end
     end
+
+    test "can create create config with root object directly" do
+      root = Rootable.create
+      config = TopConfig.create root_object: root
+
+      assert_equal 1, root.configurations.count
+      assert_equal config, root.configurations.first
+
+      root.reload
+      config.reload
+
+      assert_equal 1, root.configurations.count
+      assert_equal config, root.configurations.first
+
+    end
+
   end
 end
