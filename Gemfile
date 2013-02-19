@@ -1,4 +1,4 @@
-source "http://rubygems.org"
+source "https://rubygems.org"
 # Add dependencies required to use your gem here.
 # Example:
 #   gem "activesupport", ">= 2.3.5"
@@ -18,6 +18,5 @@ group :test do
 end
 
 gem 'mongoid'
-
 gem 'bson_ext' #, '=1.4.0'
 gem 'resque'
