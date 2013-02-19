@@ -19,7 +19,8 @@ require 'mongoid'
 ENV["MONGOID_ENV"]="test"
 Mongoid.load!("#{File.dirname(__FILE__)}/mongoid.yml")
 
-require 'stalker'
+
+Resque.redis.namespace = "resque:active_worker_test"
 
 
 module ActiveWorker

@@ -1,3 +1,5 @@
+require 'resque/errors'
+
 module ActiveWorker
   module JobQueue
     class JobExecuter
@@ -16,9 +18,10 @@ module ActiveWorker
         params     = args["params"]
 
         klass = class_name.constantize
-        trap("TERM") { handle_termination(klass, params) }
         klass.send(method,*params)
 
+      rescue Resque::TermException => e
+        handle_termination(klass, params, e)
       rescue SignalException => e
         handle_exception(e, method, params, klass)
         raise e
@@ -34,8 +37,8 @@ module ActiveWorker
         log_error handle_error_error.backtrace.join("\n")
       end
 
-      def self.handle_termination(klass, params)
-        log_error "Handling termination for #{klass}"
+      def self.handle_termination(klass, params, exception = nil)
+        log_error "Handling #{exception || "termination" } for #{klass}"
         klass.handle_termination params
         exit
       end

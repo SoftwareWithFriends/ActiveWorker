@@ -3,7 +3,6 @@ module ActiveWorker
     module RunRemotely
 
       THREADED = "threaded"
-      STALKER  = "stalker"
       RESQUE   = "resque"
 
 
@@ -18,8 +17,7 @@ module ActiveWorker
       self.worker_mode = RESQUE
 
       class RemoteRunner
-        def initialize(host,klass)
-          @host = host
+        def initialize(klass)
           @klass = klass
         end
 
@@ -31,16 +29,10 @@ module ActiveWorker
               thread = Thread.new do
                 ActiveWorker::JobQueue::JobExecuter.execute_task_from_args(args)
               end
-            when STALKER
-              Stalker.enqueue(queue,args,{:ttr => 0})
             when RESQUE
               Resque.enqueue(JobExecuter,args)
           end
           thread
-        end
-
-        def queue
-          @host ? "#{@host}.execute.task" : "execute.task"
         end
 
         def construct_args(method, params)
@@ -52,8 +44,8 @@ module ActiveWorker
         end
       end
 
-      def run_remotely(host = nil)
-        RemoteRunner.new(host,self.to_s)
+      def run_remotely
+        RemoteRunner.new(self.to_s)
       end
     end
   end

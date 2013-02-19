@@ -12,7 +12,7 @@ module ActiveWorker
       end
 
       setup do
-        RunRemotely.worker_mode = RunRemotely::STALKER
+        RunRemotely.worker_mode = RunRemotely::RESQUE
       end
 
       test "correctly enqueues jobs with no host" do
@@ -28,29 +28,9 @@ module ActiveWorker
         args["method"] = method
         args["params"] = params
 
-        Stalker.expects(:enqueue).with("execute.task",args,{:ttr => 0})
-
-        RunRemotely.worker_mode
+        Resque.expects(:enqueue).with(JobExecuter,args)
 
         TestClass.run_remotely.test_method(param1,param2)
-      end
-
-      test "correctly enqueues jobs with host" do
-        param1 = 1
-        param2 = 2
-
-        class_name = TestClass.to_s
-        method     = "test_method"
-        params     = [param1,param2]
-
-        args = {}
-        args["class_name"] = class_name
-        args["method"] = method
-        args["params"] = params
-
-        Stalker.expects(:enqueue).with("host1.execute.task",args,{:ttr => 0})
-
-        TestClass.run_remotely("host1").test_method(param1,param2)
       end
 
       test "puts stack trace on FailureEvent from error" do
@@ -86,25 +66,6 @@ module ActiveWorker
         thread.join
       end
 
-      test "can set worker mode to resque" do
-        param1 = 1
-        param2 = 2
-
-        class_name = TestClass.to_s
-        method     = "test_method"
-        params     = [param1,param2]
-
-        args = {}
-        args["class_name"] = class_name
-        args["method"] = method
-        args["params"] = params
-
-        RunRemotely.worker_mode = RunRemotely::RESQUE
-
-        Resque.expects(:enqueue).with(JobExecuter,args)
-
-        TestClass.run_remotely.test_method(param1,param2)
-      end
 
     end
 
