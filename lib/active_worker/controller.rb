@@ -9,6 +9,7 @@ module ActiveWorker
       configurations = config.expand_for_threads
 
       threads = execute_threads configurations
+      after_thread_launch_methods.each { |method| send(method, config, configurations) }
       threads.each(&:join)
     ensure
       worker_cleanup_methods.each { |method| send(method, configurations) }
@@ -39,6 +40,14 @@ module ActiveWorker
       configuration_id = params.shift
       configuration = Configuration.find(configuration_id)
       TerminationEvent.from_termination(configuration)
+    end
+
+    def self.after_thread_launch(method)
+      after_thread_launch_methods << method
+    end
+
+    def self.after_thread_launch_methods
+      @after_thread_launch_methods ||= []
     end
 
     def self.worker_cleanup(method)

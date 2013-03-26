@@ -238,7 +238,7 @@ module ActiveWorker
 
     test "launch returns configurations" do
       config = AfterLaunchConfig.create
-
+      AfterLaunchConfig.any_instance.stubs(:enqueue_job)
       after_launch_configs = ["after launch 1", "after launch 2"]
 
       config.stubs(:after_launch_method).returns(after_launch_configs)

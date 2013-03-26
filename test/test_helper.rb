@@ -81,6 +81,9 @@ end
 
 
 class ActiveSupport::TestCase
+
+  ActiveWorker::JobQueue::RunRemotely.worker_mode = ActiveWorker::JobQueue::RunRemotely::THREADED
+
   def create_exception
     error_message = "Error message"
     error_backtrace = ["line 1", "line 2"]
@@ -89,6 +92,14 @@ class ActiveSupport::TestCase
     error.stubs(:message).returns(error_message)
     error.stubs(:backtrace).returns(error_backtrace)
     error
+  end
+
+  def wait_for_all_configurations
+    ActiveWorker::Configuration.all.each(&:wait_until_completed)
+  end
+
+  def assert_no_failures
+    assert_equal 0, ActiveWorker::FailureEvent.count, "Failures: #{ActiveWorker::FailureEvent.all.map { |e| e.message + "\n" + e.stack_trace }.join}"
   end
 
   setup :clear_database
