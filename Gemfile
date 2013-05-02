@@ -12,9 +12,9 @@ group :development do
 end
 
 group :test do
-  gem 'minitest-reporters'
   gem 'mocha', require: false
   gem 'activesupport'
+  gem 'test-unit'
 end
 
 gem 'mongoid'

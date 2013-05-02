@@ -22,12 +22,23 @@ module ActiveWorker
     end
 
     def self.execute_thread(configuration)
-      Thread.new do
+      pid =  fork do
+        handle_forking
         worker = new(configuration)
         worker.started
         worker.execute
         worker.finished
       end
+      Process.detach(pid)
+    end
+
+    def self.handle_forking
+      Mongoid::Sessions.clear
+      Resque.redis = clone_redis_connection(Resque.redis)
+    end
+
+    def self.clone_redis_connection(redis)
+      Redis.new(host: redis.client.host, port: redis.client.port)
     end
 
     def self.handle_error(error, method, params)
