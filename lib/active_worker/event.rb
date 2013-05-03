@@ -9,6 +9,8 @@ module ActiveWorker
     alias_method :root_owner, :configuration
     root_object_relation :events
 
+    index({:configuration_id => -1, :_type => 1}, {:background => true})
+
     before_save :set_message, :set_process_information
 
     validates_presence_of :configuration, :message => "Events must be owned by a Configuration"
