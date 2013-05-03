@@ -26,8 +26,13 @@ module ActiveWorker
       end
       configuration = ThreadedConfig.create number_of_threads: 2
 
+      old_mode = Controller::local_worker_mode
+      Controller::local_worker_mode = Controller::THREADED_MODE
+
       Controller.any_instance.expects(:execute).twice
       Controller.execute_worker(configuration.id)
+
+      Controller::local_worker_mode = old_mode
     end
 
     test "creates finished event during execute_worker" do

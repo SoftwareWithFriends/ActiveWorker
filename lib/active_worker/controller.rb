@@ -4,32 +4,63 @@ module ActiveWorker
 
     attr_reader :configuration
 
+    THREADED_MODE = :local_worker_thread
+    FORKING_MODE =  :local_worker_fork
+
+    def self.local_worker_mode
+      @@local_worker_mode
+    end
+
+    def self.local_worker_mode=(mode)
+      @@local_worker_mode = mode
+    end
+
+    self.local_worker_mode = FORKING_MODE
+
     def self.execute_worker(configuration_id)
       config = Configuration.find(configuration_id)
       configurations = config.expand_for_threads
-
-      threads = execute_threads configurations
-      after_thread_launch_methods.each { |method| send(method, config, configurations) }
-      threads.each(&:join)
+      execute_local_workers(config, configurations)
     ensure
       worker_cleanup_methods.each { |method| send(method, configurations) }
     end
 
-    def self.execute_threads(configurations)
+    def self.execute_local_workers(config, configurations)
+      threads = execute_expanded_configurations configurations
+      after_thread_launch_methods.each { |method| send(method, config, configurations) }
+      threads.each(&:join)
+    end
+
+    def self.execute_expanded_configurations(configurations)
       configurations.map do |expanded_config|
-        execute_thread expanded_config
+        case local_worker_mode
+          when THREADED_MODE
+            execute_thread expanded_config
+          when FORKING_MODE
+            execute_fork expanded_config
+        end
       end
     end
 
     def self.execute_thread(configuration)
+      Thread.new do
+        workflow(configuration)
+      end
+    end
+
+    def self.execute_fork(configuration)
       pid =  fork do
         handle_forking
-        worker = new(configuration)
-        worker.started
-        worker.execute
-        worker.finished
+        workflow(configuration)
       end
       Process.detach(pid)
+    end
+
+    def self.workflow(configuration)
+      worker = new(configuration)
+      worker.started
+      worker.execute
+      worker.finished
     end
 
     def self.handle_forking
