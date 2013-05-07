@@ -103,6 +103,11 @@ class ActiveSupport::TestCase
   end
 
   setup :clear_database
+  teardown :reset_default_worker_mode
+
+  def reset_default_worker_mode
+    ActiveWorker::Controller::local_worker_mode = ActiveWorker::DEFAULT_MODE
+  end
 
   private
 

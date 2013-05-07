@@ -5,6 +5,7 @@ require 'active_worker/job_queue/run_remotely'
 require 'active_worker/job_queue/job_executer'
 
 require 'active_worker/behavior/acts_as_root_object'
+require 'active_worker/behavior/execute_concurrently'
 require 'active_worker/behavior/has_root_object'
 require 'active_worker/behavior/hashable'
 
