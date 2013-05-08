@@ -79,14 +79,19 @@ module ActiveWorker
       end
 
       def in_fork(param)
-        after_fork
+        after_fork(param)
         execute(param)
       end
 
-      def after_fork
+      def after_fork(param)
         cleanup_after_children
+        set_process_name(param)
         reset_mongoid
         reset_resque
+      end
+
+      def set_process_name(param)
+        $0 = "ActiveWorker Forked from #{Process.ppid} for #{param}"
       end
 
       def reset_mongoid

@@ -47,7 +47,19 @@ module ActiveWorker
       test "after fork reset mongoid and resque" do
         FakeController.expects(:reset_mongoid)
         FakeController.expects(:reset_resque)
-        FakeController.after_fork
+        FakeController.after_fork(nil)
+      end
+
+      test "after fork sets process name" do
+        param = "foo"
+        FakeController.expects(:set_process_name).with(param)
+        FakeController.after_fork(param)
+      end
+
+      test "can set process name" do
+        param = "foo"
+        FakeController.after_fork(param)
+        assert_equal "ActiveWorker Forked from #{Process.ppid} for foo", $0
       end
 
       test "can reset mongoid" do
