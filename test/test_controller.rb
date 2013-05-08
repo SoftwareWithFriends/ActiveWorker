@@ -52,6 +52,7 @@ module ActiveWorker
       assert_equal 0, FailureEvent.count
       assert_equal number_of_threads, StartedEvent.count
       assert_equal number_of_threads, FinishedEvent.count
+      assert_equal 0, Controller.pids.size
     end
 
     test "creates finished event during execution" do
@@ -85,6 +86,32 @@ module ActiveWorker
 
       TestController.expects(:test_worker_cleanup_method)
       TestController.execute_expanded(configuration.id)
+    end
+
+
+    test "kills child pids" do
+      class SpawnsChildrenController < Controller
+        def execute
+          sleep 5
+        end
+      end
+      number_of_threads = 2
+      configuration = ThreadedConfig.create number_of_threads: number_of_threads
+
+      assert_equal FORKING_MODE, SpawnsChildrenController::local_worker_mode
+
+      thread = Thread.new do
+        SpawnsChildrenController.execute_expanded(configuration.id)
+      end
+
+      sleep 0.1 until (StartedEvent.count == number_of_threads)
+      SpawnsChildrenController.handle_termination([configuration.id])
+      thread.join
+
+      assert_equal 0, FailureEvent.count
+      assert_equal number_of_threads, StartedEvent.count
+      assert_equal number_of_threads, TerminationEvent.count
+
     end
   end
 end

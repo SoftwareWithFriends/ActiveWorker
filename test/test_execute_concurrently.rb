@@ -4,15 +4,17 @@ module ActiveWorker
   module Behavior
     class ExecuteConcurrentlyTest < ActiveSupport::TestCase
 
+      class ThreadedConfig < Configuration
+        include Expandable
+      end
+
       class FakeController
         extend ExecuteConcurrently
 
         def self.execute(param)
-
         end
 
         def execute
-
         end
       end
 
@@ -54,10 +56,30 @@ module ActiveWorker
         assert_not_equal first_mongoid_session, Mongoid.default_session
       end
 
+      test "keeps track of spawned child pids" do
+        params = [1, 2]
+        assert_equal FORKING_MODE, FakeController::local_worker_mode
+
+        threads = FakeController.execute_concurrently(params)
+        assert_equal params.size, threads.size
+        assert_equal params.size, FakeController.pids.size
+        assert_equal threads.map(&:pid), FakeController.pids
+      end
+
+      test "cleans up child pids" do
+        params = [1, 2]
+        assert_equal FORKING_MODE, FakeController::local_worker_mode
+
+        FakeController.execute_concurrently(params)
+        assert_equal params.size, FakeController.pids.size
+
+        FakeController.wait_for_children
+        assert_empty FakeController.pids
+      end
+
       test "can reset resque" do
-        first_redis_connection = Resque.redis
+        Resque.redis.client.expects(:reconnect)
         FakeController.reset_resque
-        assert_not_equal first_redis_connection, Resque.redis
       end
 
 

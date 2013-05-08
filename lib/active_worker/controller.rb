@@ -9,11 +9,11 @@ module ActiveWorker
       config = Configuration.find(configuration_id)
       configurations = config.expand_for_threads
 
-      threads = execute_concurrently(configurations)
+      execute_concurrently(configurations)
 
       after_thread_launch_methods.each { |method| send(method, config, configurations) }
 
-      threads.each(&:join)
+      wait_for_children
     ensure
       worker_cleanup_methods.each { |method| send(method, configurations) }
     end
@@ -32,6 +32,8 @@ module ActiveWorker
     end
 
     def self.handle_termination(params)
+      kill_children
+      wait_for_children
       configuration_id = params.shift
       configuration = Configuration.find(configuration_id)
       TerminationEvent.from_termination(configuration)

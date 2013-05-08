@@ -15,13 +15,47 @@ module ActiveWorker
         @@local_worker_mode ||= FORKING_MODE
       end
 
+      def pids
+        @pids ||= []
+      end
+
+      def threads
+        @threads ||= []
+      end
+
       def execute_concurrently(params)
-        params.map do |param|
+        new_threads = params.map do |param|
           case local_worker_mode
             when THREADED_MODE
               execute_thread param
             when FORKING_MODE
               execute_fork param
+          end
+        end
+
+        threads.concat new_threads
+        new_threads
+      end
+
+      def wait_for_children
+        threads.each do |thread|
+          thread.join if thread
+        end
+
+        cleanup_after_children
+      end
+
+      def cleanup_after_children
+        @pids = []
+        @threads = []
+      end
+
+      def kill_children
+        pids.each do |pid|
+          begin
+            Process.kill("TERM", pid) if pid
+          rescue Errno::ESRCH
+            puts "PID: #{pid} did not exist when we went to kill it"
           end
         end
       end
@@ -36,6 +70,7 @@ module ActiveWorker
         pid = fork do
           in_fork(param)
         end
+        pids << pid
         Process.detach(pid)
       end
 
@@ -49,8 +84,9 @@ module ActiveWorker
       end
 
       def after_fork
-        reset_mongoid()
-        reset_resque()
+        cleanup_after_children
+        reset_mongoid
+        reset_resque
       end
 
       def reset_mongoid
@@ -58,11 +94,7 @@ module ActiveWorker
       end
 
       def reset_resque
-        Resque.redis = clone_redis_connection(Resque.redis)
-      end
-
-      def clone_redis_connection(redis)
-        Redis.new(host: redis.client.host, port: redis.client.port)
+        Resque.redis.client.reconnect
       end
 
     end
