@@ -91,6 +91,7 @@ module ActiveWorker
 
       test "can reset resque" do
         Resque.redis.client.expects(:reconnect)
+        FakeController.expects(:trap).with("TERM","DEFAULT")
         FakeController.reset_resque
       end
 

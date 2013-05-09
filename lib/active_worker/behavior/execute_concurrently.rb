@@ -100,6 +100,7 @@ module ActiveWorker
 
       def reset_resque
         Resque.redis.client.reconnect
+        trap("TERM", "DEFAULT")
       end
 
     end
