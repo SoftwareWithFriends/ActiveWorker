@@ -19,4 +19,4 @@ end
 
 gem 'mongoid'
 gem 'bson_ext' #, '=1.4.0'
-gem 'resque'
+gem 'resque', :git => "git://github.com/SoftwareWithFriends/resque.git", :branch  => "FEATURE_logging_changes"
