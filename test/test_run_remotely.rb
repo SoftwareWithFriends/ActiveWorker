@@ -33,17 +33,7 @@ module ActiveWorker
         TestClass.run_remotely.test_method(param1,param2)
       end
 
-      test "puts stack trace on FailureEvent from error" do
-        config = ActiveWorker::Configuration.create
 
-        exception = create_exception
-        ActiveWorker::Controller.handle_error(exception,:create, [config.id])
-
-        event = ActiveWorker::FailureEvent.where(:configuration_id => config.id).first
-
-        assert_match exception.message, event.message
-        assert_equal exception.backtrace.join("\n"), event.stack_trace
-      end
 
       test "can set worker mode to threaded" do
         param1 = 1

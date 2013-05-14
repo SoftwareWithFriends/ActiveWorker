@@ -52,12 +52,12 @@ module ActiveWorker
       end
 
       test "can handle termination" do
-        config = Configuration.create
+        params = [1,2]
+        fake_class = mock
+        fake_class.expects(:handle_termination).with(params)
+
         JobExecuter.expects(:exit)
-        JobExecuter.handle_termination(ActiveWorker::Controller, [config.to_param])
-
-        assert TerminationEvent.where(configuration_id: config.id).first
-
+        JobExecuter.handle_termination(fake_class, params)
       end
 
     end

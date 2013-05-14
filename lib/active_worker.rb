@@ -8,11 +8,13 @@ require 'active_worker/behavior/acts_as_root_object'
 require 'active_worker/behavior/execute_concurrently'
 require 'active_worker/behavior/has_root_object'
 require 'active_worker/behavior/hashable'
+require 'active_worker/behavior/create_from_error'
 
 require 'active_worker/event'
 require 'active_worker/notification_event'
 require 'active_worker/finished_event'
 require 'active_worker/failure_event'
+require 'active_worker/parent_event'
 
 require 'active_worker/configuration'
 require 'active_worker/controller'

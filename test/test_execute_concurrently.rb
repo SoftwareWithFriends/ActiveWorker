@@ -11,11 +11,22 @@ module ActiveWorker
       class FakeController
         extend ExecuteConcurrently
 
+        class FakeControllerException < StandardError;
+        end
+
         def self.execute(param)
+        end
+
+        def self.handle_error(error, method, params)
+          puts "#{error} #{method} #{params}"
         end
 
         def execute
         end
+      end
+
+      teardown do
+        FakeController.role = nil
       end
 
       test "can set threaded mode" do
@@ -50,16 +61,23 @@ module ActiveWorker
         FakeController.after_fork(nil)
       end
 
+      test "after_fork sets mode" do
+        FakeController.after_fork(nil)
+        assert_equal FORKED, FakeController.role
+      end
+
       test "after fork sets process name" do
         param = "foo"
         FakeController.expects(:set_process_name).with(param)
         FakeController.after_fork(param)
+
       end
 
       test "can set process name" do
         param = "foo"
         FakeController.after_fork(param)
         assert_equal "ActiveWorker Forked from #{Process.ppid} for foo", $0
+
       end
 
       test "can reset mongoid" do
@@ -91,8 +109,23 @@ module ActiveWorker
 
       test "can reset resque" do
         Resque.redis.client.expects(:reconnect)
-        FakeController.expects(:trap).with("TERM","DEFAULT")
+        FakeController.expects(:trap).with("TERM", "DEFAULT")
         FakeController.reset_resque
+      end
+
+
+      test "can handle exception in fork" do
+        FakeController.expects(:execute).raises(StandardError)
+        FakeController.expects(:handle_error)
+        FakeController.in_fork(:foo)
+      end
+
+      test "can handle signal exception in fork" do
+        FakeController.expects(:execute).raises(SignalException.new("TERM"))
+        FakeController.expects(:handle_termination)
+        FakeController.expects(:exit)
+
+        FakeController.in_fork(:foo)
       end
 
 

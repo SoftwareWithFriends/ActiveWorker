@@ -28,15 +28,41 @@ module ActiveWorker
     def self.handle_error(error, method, params)
       configuration_id = params.shift
       configuration = Configuration.find(configuration_id)
-      FailureEvent.from_error(configuration, error)
+
+      if threaded?
+        FailureEvent.from_error(configuration, error)
+      end
+
+      if forking? && parent?
+        ParentEvent.create_error_from_configuration(configuration, error)
+        kill_children
+        wait_for_children
+      end
+
+      if forked?
+        FailureEvent.create_error_from_configuration(configuration, error)
+      end
+
+    rescue Exception => e
+      puts "ERROR: While Handling #{error} Had : #{e}\n#{e.backtrace.join("\n")}"
     end
 
     def self.handle_termination(params)
-      kill_children
-      wait_for_children
+      if forking? && parent?
+        kill_children
+        wait_for_children
+      end
+
       configuration_id = params.shift
       configuration = Configuration.find(configuration_id)
-      TerminationEvent.from_termination(configuration)
+
+      if threaded?
+        TerminationEvent.from_termination(configuration)
+      end
+      if forked?
+        TerminationEvent.create_termination_from_configuration(configuration)
+      end
+
     end
 
     def self.after_thread_launch(method)

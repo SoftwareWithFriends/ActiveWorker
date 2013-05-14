@@ -4,6 +4,9 @@ module ActiveWorker
   FORKING_MODE = :local_worker_fork
   DEFAULT_MODE = FORKING_MODE
 
+  PARENT = :parent
+  FORKED = :forked
+
   module Behavior
     module ExecuteConcurrently
 
@@ -13,6 +16,30 @@ module ActiveWorker
 
       def local_worker_mode
         @@local_worker_mode ||= FORKING_MODE
+      end
+
+      def threaded?
+        local_worker_mode == THREADED_MODE
+      end
+
+      def forking?
+        local_worker_mode == FORKING_MODE
+      end
+
+      def role
+        @@role ||= PARENT
+      end
+
+      def role=(role)
+        @@role = role
+      end
+
+      def parent?
+        role == PARENT
+      end
+
+      def forked?
+        role == FORKED
       end
 
       def pids
@@ -81,9 +108,15 @@ module ActiveWorker
       def in_fork(param)
         after_fork(param)
         execute(param)
+      rescue SignalException
+        self.handle_termination([param.to_param])
+        exit
+      rescue Exception => e
+        self.handle_error(e, :in_fork, [param.to_param])
       end
 
       def after_fork(param)
+        self.role = FORKED
         cleanup_after_children
         set_process_name(param)
         reset_mongoid
