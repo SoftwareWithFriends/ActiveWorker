@@ -42,7 +42,7 @@ module ActiveWorker
     def set_process_information
       self.host = HostInformation.hostname
       self.process_id = get_pid
-      self.worker_pid = get_worker_pid
+      #self.worker_pid = get_worker_pid
     end
 
     def get_pid
