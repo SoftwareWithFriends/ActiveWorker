@@ -5,13 +5,13 @@
 
 Gem::Specification.new do |s|
   s.name = "active_worker"
-  s.version = "0.50.0"
+  s.version = "0.51.0"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
-  s.authors = ["perf"]
+  s.authors = ["Ryan McGarvey", "Tim Johnson", "Eric Liu"]
   s.date = "2013-07-01"
   s.description = "Uses a Configuration/Controller pattern to allow easy implementation and organziation of multi-tier distributed workloads."
-  s.email = "perf@skarven.net"
+  s.email = ["mcgarvey.ryan@gmail.com", "buddhistpirate@chubtoad.com", "liukke@gmail.com"]
   s.extra_rdoc_files = [
     "LICENSE.txt",
     "README.rdoc"
@@ -72,7 +72,7 @@ Gem::Specification.new do |s|
     "test/test_template.rb",
     "test/test_termination_event.rb"
   ]
-  s.homepage = "http://github.com/ryanmcgarvey/active_worker"
+  s.homepage = "https://github.com/SoftwareWithFriends/ActiveWorker"
   s.licenses = ["MIT"]
   s.require_paths = ["lib"]
   s.rubygems_version = "1.8.24"

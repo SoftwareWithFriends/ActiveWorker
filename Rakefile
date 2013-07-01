@@ -15,12 +15,12 @@ require 'jeweler'
 Jeweler::Tasks.new do |gem|
   # gem is a Gem::Specification... see http://docs.rubygems.org/read/chapter/20 for more options
   gem.name = "active_worker"
-  gem.homepage = "http://github.com/ryanmcgarvey/active_worker"
+  gem.homepage = "https://github.com/SoftwareWithFriends/ActiveWorker"
   gem.license = "MIT"
   gem.summary = %Q{Framework for making class distributable on a queueing system.}
   gem.description = %Q{Uses a Configuration/Controller pattern to allow easy implementation and organziation of multi-tier distributed workloads.}
-  gem.email = "perf@skarven.net"
-  gem.authors = ["perf"]
+  gem.email = ["mcgarvey.ryan@gmail.com", "buddhistpirate@chubtoad.com", "liukke@gmail.com"]
+  gem.authors = ["Ryan McGarvey", "Tim Johnson", "Eric Liu"]
   # dependencies defined in Gemfile
 end
 Jeweler::RubygemsDotOrgTasks.new
