@@ -9,12 +9,12 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Ryan McGarvey", "Tim Johnson", "Eric Liu"]
-  s.date = "2013-07-01"
+  s.date = "2013-07-02"
   s.description = "Uses a Configuration/Controller pattern to allow easy implementation and organziation of multi-tier distributed workloads."
   s.email = ["mcgarvey.ryan@gmail.com", "buddhistpirate@chubtoad.com", "liukke@gmail.com"]
   s.extra_rdoc_files = [
     "LICENSE.txt",
-    "README.rdoc"
+    "README.md"
   ]
   s.files = [
     ".document",
@@ -22,7 +22,7 @@ Gem::Specification.new do |s|
     "Gemfile",
     "Gemfile.lock",
     "LICENSE.txt",
-    "README.rdoc",
+    "README.md",
     "Rakefile",
     "VERSION",
     "active_worker.gemspec",
@@ -76,7 +76,7 @@ Gem::Specification.new do |s|
   s.licenses = ["MIT"]
   s.require_paths = ["lib"]
   s.rubygems_version = "1.8.24"
-  s.summary = "Framework for making class distributable on a queueing system."
+  s.summary = "Framework for creating and running long-running tasks on a cluster"
 
   if s.respond_to? :specification_version then
     s.specification_version = 3

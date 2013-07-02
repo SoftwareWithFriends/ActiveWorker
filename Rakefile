@@ -17,7 +17,7 @@ Jeweler::Tasks.new do |gem|
   gem.name = "active_worker"
   gem.homepage = "https://github.com/SoftwareWithFriends/ActiveWorker"
   gem.license = "MIT"
-  gem.summary = %Q{Framework for making class distributable on a queueing system.}
+  gem.summary = %Q{Framework for creating and running long-running tasks on a cluster}
   gem.description = %Q{Uses a Configuration/Controller pattern to allow easy implementation and organziation of multi-tier distributed workloads.}
   gem.email = ["mcgarvey.ryan@gmail.com", "buddhistpirate@chubtoad.com", "liukke@gmail.com"]
   gem.authors = ["Ryan McGarvey", "Tim Johnson", "Eric Liu"]
