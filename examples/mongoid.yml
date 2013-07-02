@@ -1,0 +1,6 @@
+example_runner:
+  sessions:
+    default:
+      database: active_worker_example_runner
+      hosts:
+        - localhost:27017
