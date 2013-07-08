@@ -9,9 +9,10 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Ryan McGarvey", "Tim Johnson", "Eric Liu"]
-  s.date = "2013-07-02"
+  s.date = "2013-07-08"
   s.description = "Uses a Configuration/Controller pattern to allow easy implementation and organziation of multi-tier distributed workloads."
   s.email = ["mcgarvey.ryan@gmail.com", "buddhistpirate@chubtoad.com", "liukke@gmail.com"]
+  s.executables = ["example_runner.rb"]
   s.extra_rdoc_files = [
     "LICENSE.txt",
     "README.md"
@@ -26,6 +27,11 @@ Gem::Specification.new do |s|
     "Rakefile",
     "VERSION",
     "active_worker.gemspec",
+    "bin/example_runner.rb",
+    "examples/mongoid.yml",
+    "examples/test_worker/configuration.rb",
+    "examples/test_worker/controller.rb",
+    "examples/test_worker/http_runner.rb",
     "lib/active_worker.rb",
     "lib/active_worker/behavior/acts_as_root_object.rb",
     "lib/active_worker/behavior/can_be_notified.rb",
