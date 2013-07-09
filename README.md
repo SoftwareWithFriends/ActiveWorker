@@ -2,6 +2,11 @@ ActiveWorker
 ============
 A framework for defining and tracking long-running jobs across a cluster.
 
+Status
+------
+[![Code Climate](https://codeclimate.com/github/SoftwareWithFriends/ActiveWorker.png)](https://codeclimate.com/github/SoftwareWithFriends/ActiveWorker)
+[![Build Status](https://api.travis-ci.org/SoftwareWithFriends/ActiveWorker.png?branch=master)](https://travis-ci.org/SoftwareWithFriends/ActiveWorker)
+
 Core Features:
 * Backed by MongoDB/Mongoid for long-term storage of Job Configurations and Events
 * Templating to group similar jobs by Scenario
