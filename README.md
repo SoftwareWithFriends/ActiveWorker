@@ -7,7 +7,8 @@ Status
 [![Code Climate](https://codeclimate.com/github/SoftwareWithFriends/ActiveWorker.png)](https://codeclimate.com/github/SoftwareWithFriends/ActiveWorker)
 [![Build Status](https://api.travis-ci.org/SoftwareWithFriends/ActiveWorker.png?branch=master)](https://travis-ci.org/SoftwareWithFriends/ActiveWorker)
 
-Core Features:
+Core Features
+-------------
 * Backed by MongoDB/Mongoid for long-term storage of Job Configurations and Events
 * Templating to group similar jobs by Scenario
 * Hierarchy of Configurations so jobs can launch/own other jobs
@@ -28,6 +29,10 @@ Install
 ```
 gem install active_worker
 ```
+
+Getting Started
+---------------
+Take a look at examples and bin/example_runner for now.
 
 Testing
 -------
